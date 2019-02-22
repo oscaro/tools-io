@@ -1,0 +1,262 @@
+# oscaro-tools-io
+
+Oscaro’s generic I/O tools collection.
+
+## Usage
+
+```clojure
+[com.oscaro/tools-io "0.3.16"]
+```
+
+### [`core/gzipped?`](src/tools/io/core.clj#L65)
+
+Test if a filename ends with `.gz` or `.gzip`
+
+**arguments**:
+- filename
+
+**returns**: a boolean
+
+examples
+```clojure
+(core/gzipped? "toto.gz"); => true
+(core/gzipped? "toto.GZip"); => true
+```
+
+### [`join-path`](src/tools/io.clj#L48)
+
+Join multiple parts of a path, like `os.path.join` in Python.
+
+```clojure
+(join-path "foo" "bar") ; => "foo/bar"
+(join-path "foo/" "bar") ; => "foo/bar"
+(join-path "gs://mybucket" "bar") ; => "gs://mybucket/bar"
+```
+
+### [`basename`](src/tools/io.clj#L66)
+
+```clojure
+(basename "/var/log/mysql/") ; => "mysql"
+(basename "http://www.google.com/index.html") ; => "index.html"
+```
+
+### `parent`
+
+```clojure
+(parent "/var/log/mysql/") ; => "/var/log"
+(parent "http://www.google.com/index.html") ; => "http://www.google.com"
+```
+
+### [`splitext`](src/tools/io.clj#L75)
+
+```clojure
+(splitext "http://www.google.com/index.html") ; => ["http://www.google.com/index" "html"]
+(splitext "archive.tar.gz") ; => ["archive.tar" "gz"]
+```
+
+### [`read-text-file`](src/tools/io.clj#L185)
+
+return a lazy seq of string from a [protocol://]jsons[.gz] file.
+*warning*: the seq must be entirely consumed before the file is closed.
+
+**arguments**:
+- filename: string
+
+**returns**: an lazy seq of string
+
+### [`read-jsons-file`](src/tools/io.clj#L196)
+
+return a lazy seq of parsed json objects from a [protocol://]jsons[.gz] file.
+*warning*: the seq must be entirely consumed before the file is closed.
+
+**arguments**:
+- filename: string
+
+**returns**: an lazy seq of parsed objects
+
+example
+```clojure
+(doall (map println (read-jsons-file "sample.jsons.gz")))
+```
+
+### [`read-edns-file`](src/tools/io.clj#L207)
+
+return a lazy seq of parsed edn objects from a [protocol://]edn[.gz] file.
+*warning*: the seq must be entirely consumed before the file is closed.
+
+**arguments**:
+- filename: string
+
+**returns**: an lazy seq of parsed objects
+
+### [`read-csv-file`](src/tools/io.clj#L224)
+
+return a lazy seq of parsed csv row as vector from a [protocol://]file.csv[.gz] file.
+see http://clojure.github.io/data.csv/ for options.
+*warning*: the seq must be entirely consumed before the file is closed.
+
+**arguments**:
+- filename: string
+- args: options for data.csv  `{:separator (default \,) :quote (default \")}`
+
+**returns**: an lazy seq of parsed objects
+
+### [`read-jsons-files`](src/tools/io.clj#L269)
+
+return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
+*warning*: the seq must be entirely consumed before every files are closed.
+
+**arguments**:
+- [filenames]
+
+**returns**: an lazy seq of parsed objects
+
+example
+```clojure
+(doall (map println (read-jsons-files ["part1.jsons.gz" "part1.jsons.gz"])))
+```
+
+### [`read-edns-files`](src/tools/io.clj#L275)
+
+return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
+*warning*: the seq must be entirely consumed before every files are closed.
+
+**arguments**:
+- [filenames]
+
+**returns**: an lazy seq of parsed objects
+
+### [`list-files`](src/tools/io.clj#L120)
+
+return a seq of filenames beginning with provided path.
+support local files and google storage with `gs://` as prefix, and an optional `:storage` as options
+
+**arguments**:
+- path
+- [options]
+
+**returns**: seq of string
+
+examples
+```clojure
+(doall (map println (list-files "gs://my-bucket/dir/20160902/animals")))
+;-> output:
+;gs://my-bucket/dir/20160902/animals-aaaaaaaaaa.jsons.gz
+;gs://my-bucket/dir/20160902/animals-aaaaaaaaab.jsons.gz
+;gs://my-bucket/dir/20160902/animals-aaaaaaaaac.jsons.gz
+;gs://my-bucket/dir/20160902/animals-aaaaaaaaad.jsons.gz
+;gs://my-bucket/dir/20160902/animals-aaaaaaaaae.jsons.gz
+
+
+(doall (map println (list-files "/home/alice/dir/20160902/animals")))
+;-> output:
+;/home/alice/dir/20160902/animals-aaaaaaaaaa.jsons.gz
+;/home/alice/dir/20160902/animals-aaaaaaaaab.jsons.gz
+;/home/alice/dir/20160902/animals-aaaaaaaaac.jsons.gz
+;/home/alice/dir/20160902/animals-aaaaaaaaad.jsons.gz
+;/home/alice/dir/20160902/animals-aaaaaaaaae.jsons.gz
+```
+
+### [`load-config-file`](src/tools/io.clj#L309)
+
+read and parse a configuration file.
+edn, clj, json, js, yaml, yml supported.
+
+*note*: if filename is a string, its searched first in resources, then locally
+
+**arguments**:
+- filename  (string or io/resource or io/file)
+
+**returns**: an object
+
+
+### [`core/file-reader`](src/tools/io/core.clj#L88)
+
+return a file as map like `{:stream clojure.java.io/reader}`, with support for [protocol://]file and file.gz.  
+you need to call (close! file) when you done.
+
+**arguments**:
+- filename
+- [options]: by default options = {encoding "UTF-8"}
+
+**returns**: an map with a `:stream` key
+
+### [`copy`](src/tools/io.clj#L329)
+
+Copy file from source to destination.
+
+**arguments**
+- from
+- from-opts
+- to
+- to-opts
+- [copy-opts]: by defaults copy-opts = {buffer-size 1024}
+
+example
+
+Text file:
+```clojure
+(copy
+  "/tmp/windows-file.csv"
+  {:encoding "windows-1252"}
+  "gs://my-bucket/dir/uf8-file.csv"
+  {:encoding "UTF-8" :mime-type "text/csv"}
+  {:buffer-size 2048})
+```
+
+For binary file, you must use an 8-bits encoding:
+```clojure
+(def byte-encoding "ISO-8859-1")
+(copy
+  "/tmp/workbook.xlsx"
+  {:encoding byte-encoding}
+  "gs://my-bucket/dir/uf8-file.csv"
+  {:encoding byte-encoding :mime-type "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+  {:buffer-size 2048})
+```
+
+### [`rm-rf`](src/tools/io.clj#L351)
+
+Recursively remove a directory.
+
+```clojure
+(rm-rf "/path/to/my/directory")
+```
+
+### [`with-tempfile`](src/tools/io.clj#L376)
+
+Create a temporary file and remove it at the end of the body.
+
+```clojure
+(with-tempfile [filename]
+  (println "There's a file called" filename "."))
+(println "The file is now gone.")
+```
+
+### [`with-tempdir`](src/tools/io.clj#L398)
+
+Create a temporary directory and remove it at the end of the body.
+
+```clojure
+(with-tempdir [dirname]
+  (println "There's a directory called" dirname "."))
+(println "The directory is now gone.")
+```
+
+### `slurp`
+
+### `spit`
+
+## Contributing
+
+Run the tests with:
+```shell
+lein test
+```
+
+## License
+
+Copyright © 2016-2018 Oscaro.com
+
+Distributed under the Eclipse Public License either version 1.0 or (at your
+option) any later version.
