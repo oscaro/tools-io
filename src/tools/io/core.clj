@@ -113,6 +113,11 @@
   "Deletes a file with any implementation."
   get-file-type)
 
+(defmulti exists?
+  "Returns `true` if filename exists"
+  get-file-type)
+
+
 ;;Shamefully copied from clojure.java.io/do-copy because we hardly can reuse the do-copy multi-fn
 (defn copy
   [^Reader input ^Writer output opts]
@@ -167,6 +172,14 @@
   (io/delete-file path (:silently options false)))
 
 
+(defmethod exists? :base
+  [filename & [options]]
+  (when filename
+    (try
+      (.exists (io/as-file filename))
+      (catch Exception _ false))))
+
+
 ;; HTTP & HTTPS
 ;; ------------
 ;; Basic implementation.
@@ -177,6 +190,14 @@
 (defmethod mk-input-stream :http
   [filename & [options]]
   {:stream (io/input-stream filename :encoding (:encoding options "UTF-8"))})
+
+(defmethod exists? :http
+  [filename & [options]]
+  (when filename
+    (try
+      (with-open [stream (io/input-stream filename :encoding (:encoding options "UTF-8"))]
+        (pos? (.available stream)))
+      (catch Exception _ false))))
 
 
 ;; STDIN

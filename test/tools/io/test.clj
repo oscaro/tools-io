@@ -283,3 +283,11 @@
       (spit (str dirname "/foo") "yo"))
 
     (is (not (.exists (io/as-file @*dirname*))))))
+
+(deftest exists?
+  (testing "exists? with existant dir"
+    (is (tio/exists? "test-resources/")))
+  (testing "exists? with existant file"
+    (is (tio/exists? "test-resources/test.txt")))
+  (testing "exists? with an inexistant file"
+    (is (not (tio/exists? "-i do no exists-")))))

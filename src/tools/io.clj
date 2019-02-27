@@ -428,3 +428,12 @@
   {:added "0.3.16"}
   [[x] & body]
   `(with-tempdir-impl (fn ~[x] ~@body)))
+
+(defn exists?
+  "Return true if a file exists
+
+   (exists? \"--i-dont-exists--\") ; => false
+   (exists? \"https://www.oscaro.com/\") ; => true"
+  {:added "0.3.17"}
+  [filename & [options]]
+  (core/exists? filename options))

@@ -172,7 +172,7 @@ edn, clj, json, js, yaml, yml supported.
 
 ### [`core/file-reader`](src/tools/io/core.clj#L88)
 
-return a file as map like `{:stream clojure.java.io/reader}`, with support for [protocol://]file and file.gz.  
+return a file as map like `{:stream clojure.java.io/reader}`, with support for [protocol://]file and file.gz.
 you need to call (close! file) when you done.
 
 **arguments**:
@@ -246,6 +246,15 @@ Create a temporary directory and remove it at the end of the body.
 ### `slurp`
 
 ### `spit`
+
+### `exists?`
+
+Test if a file exists.
+
+```clojure
+(exists? "https://oscaro.com") ;=> true
+(exists? "local-file-that-do-not-exists") ;=> false
+```
 
 ## Contributing
 
