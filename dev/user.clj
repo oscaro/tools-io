@@ -1,4 +1,6 @@
 (ns user
+  (:refer-clojure :rename {slurp core-slurp
+                           spit  core-spit})
   (:require [clojure.tools.namespace.repl :refer [refresh refresh-all]]
             [clojure.java.javadoc :refer [javadoc]]
             [clojure.pprint :refer [pprint]]
