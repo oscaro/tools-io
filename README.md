@@ -8,7 +8,7 @@ Oscaro’s generic I/O tools collection.
 [com.oscaro/tools-io "0.3.16"]
 ```
 
-### [`core/gzipped?`](src/tools/io/core.clj#L65)
+### `core/gzipped?`
 
 Test if a filename ends with `.gz` or `.gzip`
 
@@ -23,7 +23,7 @@ examples
 (core/gzipped? "toto.GZip"); => true
 ```
 
-### [`join-path`](src/tools/io.clj#L48)
+### `join-path`
 
 Join multiple parts of a path, like `os.path.join` in Python.
 
@@ -33,7 +33,7 @@ Join multiple parts of a path, like `os.path.join` in Python.
 (join-path "gs://mybucket" "bar") ; => "gs://mybucket/bar"
 ```
 
-### [`basename`](src/tools/io.clj#L66)
+### `basename`
 
 ```clojure
 (basename "/var/log/mysql/") ; => "mysql"
@@ -47,14 +47,14 @@ Join multiple parts of a path, like `os.path.join` in Python.
 (parent "http://www.google.com/index.html") ; => "http://www.google.com"
 ```
 
-### [`splitext`](src/tools/io.clj#L75)
+### `splitext`
 
 ```clojure
 (splitext "http://www.google.com/index.html") ; => ["http://www.google.com/index" "html"]
 (splitext "archive.tar.gz") ; => ["archive.tar" "gz"]
 ```
 
-### [`read-text-file`](src/tools/io.clj#L185)
+### `read-text-file`
 
 return a lazy seq of string from a [protocol://]jsons[.gz] file.
 *warning*: the seq must be entirely consumed before the file is closed.
@@ -64,7 +64,7 @@ return a lazy seq of string from a [protocol://]jsons[.gz] file.
 
 **returns**: an lazy seq of string
 
-### [`read-jsons-file`](src/tools/io.clj#L196)
+### `read-jsons-file`
 
 return a lazy seq of parsed json objects from a [protocol://]jsons[.gz] file.
 *warning*: the seq must be entirely consumed before the file is closed.
@@ -79,7 +79,7 @@ example
 (doall (map println (read-jsons-file "sample.jsons.gz")))
 ```
 
-### [`read-edns-file`](src/tools/io.clj#L207)
+### `read-edns-file`
 
 return a lazy seq of parsed edn objects from a [protocol://]edn[.gz] file.
 *warning*: the seq must be entirely consumed before the file is closed.
@@ -89,7 +89,7 @@ return a lazy seq of parsed edn objects from a [protocol://]edn[.gz] file.
 
 **returns**: an lazy seq of parsed objects
 
-### [`read-csv-file`](src/tools/io.clj#L224)
+### `read-csv-file`
 
 return a lazy seq of parsed csv row as vector from a [protocol://]file.csv[.gz] file.
 see http://clojure.github.io/data.csv/ for options.
@@ -101,7 +101,7 @@ see http://clojure.github.io/data.csv/ for options.
 
 **returns**: an lazy seq of parsed objects
 
-### [`read-jsons-files`](src/tools/io.clj#L269)
+### `read-jsons-files`
 
 return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
 *warning*: the seq must be entirely consumed before every files are closed.
@@ -116,7 +116,7 @@ example
 (doall (map println (read-jsons-files ["part1.jsons.gz" "part1.jsons.gz"])))
 ```
 
-### [`read-edns-files`](src/tools/io.clj#L275)
+### `read-edns-files`
 
 return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
 *warning*: the seq must be entirely consumed before every files are closed.
@@ -126,7 +126,7 @@ return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
 
 **returns**: an lazy seq of parsed objects
 
-### [`list-files`](src/tools/io.clj#L120)
+### `list-files`
 
 return a seq of filenames beginning with provided path.
 support local files and google storage with `gs://` as prefix, and an optional `:storage` as options
@@ -157,7 +157,7 @@ examples
 ;/home/alice/dir/20160902/animals-aaaaaaaaae.jsons.gz
 ```
 
-### [`load-config-file`](src/tools/io.clj#L309)
+### `load-config-file`
 
 read and parse a configuration file.
 edn, clj, json, js, yaml, yml supported.
@@ -170,7 +170,7 @@ edn, clj, json, js, yaml, yml supported.
 **returns**: an object
 
 
-### [`core/file-reader`](src/tools/io/core.clj#L88)
+### `core/file-reader`
 
 return a file as map like `{:stream clojure.java.io/reader}`, with support for [protocol://]file and file.gz.
 you need to call (close! file) when you done.
@@ -181,7 +181,7 @@ you need to call (close! file) when you done.
 
 **returns**: an map with a `:stream` key
 
-### [`copy`](src/tools/io.clj#L329)
+### `copy`
 
 Copy file from source to destination.
 
@@ -215,7 +215,7 @@ For binary file, you must use an 8-bits encoding:
   {:buffer-size 2048})
 ```
 
-### [`rm-rf`](src/tools/io.clj#L351)
+### `rm-rf`
 
 Recursively remove a directory.
 
@@ -223,7 +223,7 @@ Recursively remove a directory.
 (rm-rf "/path/to/my/directory")
 ```
 
-### [`with-tempfile`](src/tools/io.clj#L376)
+### `with-tempfile`
 
 Create a temporary file and remove it at the end of the body.
 
@@ -233,7 +233,7 @@ Create a temporary file and remove it at the end of the body.
 (println "The file is now gone.")
 ```
 
-### [`with-tempdir`](src/tools/io.clj#L398)
+### `with-tempdir`
 
 Create a temporary directory and remove it at the end of the body.
 
