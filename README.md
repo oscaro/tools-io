@@ -5,7 +5,7 @@ Oscaro’s generic I/O tools collection.
 ## Usage
 
 ```clojure
-[com.oscaro/tools-io "0.3.16"]
+[com.oscaro/tools-io "0.3.17"]
 ```
 
 ### `core/gzipped?`
@@ -129,7 +129,6 @@ return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
 ### `list-files`
 
 return a seq of filenames beginning with provided path.
-support local files and google storage with `gs://` as prefix, and an optional `:storage` as options
 
 **arguments**:
 - path
