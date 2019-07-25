@@ -7,7 +7,24 @@
                  [cheshire "5.8.1"]
                  [circleci/clj-yaml "0.6.0"]
                  [org.clojure/data.csv "0.1.4"]]
-  :deploy-repositories [["releases" {:url "https://clojars.org/repo"}]]
+  ;; https://www.blog.nodrama.io/travis-continuous-delivery/
+  :deploy-repositories [["snapshots" {:url "https://clojars.org/repo"
+                                      :username :env/clojars_username
+                                      :password :env/clojars_password
+                                      :sign-releases false}]
+                        ["releases"  {:url "https://clojars.org/repo"
+                                      :username :env/clojars_username
+                                      :password :env/clojars_password
+                                      :sign-releases false}]]
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["shell" "git" "commit" "-am" "Version ${:version} [ci skip]"]
+                  ["vcs" "tag" "v" "--no-sign"]
+                  ["deploy"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["shell" "git" "commit" "-am" "Version ${:version} [ci skip]"]
+                  ["vcs" "push"]]
+  :plugins [[lein-shell "0.5.0"]]
   :profiles {:dev {:global-vars {*warn-on-reflection* true}
                    :source-paths ["dev"]
                    :resource-paths ["test-resources"]
