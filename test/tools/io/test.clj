@@ -247,12 +247,12 @@
                "aa"))
 
         (testing "trailing slash dir"
-          (= [(format "%s/aaa/x" dirname)]
-             (vec (tio/list-files (tio/join-path dirname "aaa/")))))
+          (is (= [(format "%s/aaa/x" dirname)]
+                 (vec (tio/list-files (tio/join-path dirname "aaa/"))))))
 
         (testing "trailing slash no dir"
-          (empty? (tio/list-files (tio/join-path dirname "foo/")))
-          (empty? (tio/list-files (tio/join-path dirname "aaa/x/"))))))))
+          (is (empty? (tio/list-files (tio/join-path dirname "foo/"))))
+          (is (empty? (tio/list-files (tio/join-path dirname "aaa/x/")))))))))
 
 
 (deftest with-tempfile-test
