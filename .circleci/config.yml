@@ -1,5 +1,6 @@
 # Resources:
 #   Official docs: https://circleci.com/docs/2.0/language-clojure/
+#                  https://circleci.com/docs/2.0/configuration-reference/
 #   Example config: https://github.com/clojars/clojars-web/blob/master/.circleci/config.yml
 version: 2
 jobs:
@@ -17,9 +18,10 @@ jobs:
             - $HOME/.m2
             - $HOME/.lein
           key: tools-io-{{ checksum "project.clj" }}
-      - run:
-          name: Tests
-          command: lein test
-#     - run:
-#         name: Deploy
-#         command: lein deploy
+      - run: lein test
+      - deploy:
+          command: |
+            if [ "$CIRCLE_BRANCH" == master ] || [ "$CIRCLE_BRANCH" == devel ];
+            then
+              lein deploy
+            fi
