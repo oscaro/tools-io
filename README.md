@@ -8,6 +8,8 @@ Oscaro’s generic I/O tools collection.
 [com.oscaro/tools-io "0.3.17"]
 ```
 
+[API docs](https://cljdoc.org/d/com.oscaro/tools-io/0.3.17/api/tools.io)
+
 ### `core/gzipped?`
 
 Test if a filename ends with `.gz` or `.gzip`
