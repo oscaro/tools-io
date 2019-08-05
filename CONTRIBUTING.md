@@ -1,5 +1,12 @@
 # Contributing to `tools-io`
 
+## Tests
+
+Run the tests with:
+```shell
+lein test
+```
+
 ## Make a release
 
 1. `lein test`

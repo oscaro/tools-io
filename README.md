@@ -258,16 +258,9 @@ Test if a file exists.
 (exists? "local-file-that-do-not-exists") ;=> false
 ```
 
-## Contributing
-
-Run the tests with:
-```shell
-lein test
-```
-
 ## License
 
-Copyright © 2016-2018 Oscaro.com
+Copyright © 2016-2019 Oscaro.com
 
 Distributed under the Eclipse Public License either version 1.0 or (at your
 option) any later version.
