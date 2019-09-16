@@ -2,6 +2,7 @@
 
 ## 0.3.18 (unreleased)
 * Fix `read-string-files` options: they were ignored after the first file
+* throw a more understandable exception for unsupported file protocole
 
 
 ## 0.3.17 (2019/03/27)

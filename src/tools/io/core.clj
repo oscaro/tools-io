@@ -35,9 +35,10 @@
 (defn get-file-type
   "Dispatch function for files IO multimethods."
   ([filename]
-   (some (fn [[file-type file-pred]]
-           (when (file-pred filename)
-             file-type)) @file-preds))
+   (or (some (fn [[file-type file-pred]]
+               (when (file-pred filename)
+                 file-type)) @file-preds)
+       (throw (Exception. (str "unsupported protocol for " filename ". perhaps you forgot to require the proper extension (eg.: tools.io.gs)")))))
   ([filename _ & _]
    (get-file-type filename)))
 

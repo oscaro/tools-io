@@ -169,7 +169,7 @@
 (deftest custom-file-type
   (let [file-type :test1234
         filename "test1234://foobar"]
-    (is (nil? (cio/get-file-type filename)))
+    (is (thrown? Exception (cio/get-file-type filename)))
 
     (try
        (cio/register-file-pred!
