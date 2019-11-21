@@ -161,7 +161,7 @@
       (lazy-seq
         (when (seq filenames)
           (concat (read-file-fn (first filenames) options)
-                  (read-string-files (next filenames))))))))
+                  (read-string-files (next filenames) options)))))))
 
 (defn write-string-file-fn
   "Builder for a file-writer function. This is the opposite of

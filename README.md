@@ -5,8 +5,10 @@ Oscaro’s generic I/O tools collection.
 ## Usage
 
 ```clojure
-[com.oscaro/tools-io "0.3.17"]
+[com.oscaro/tools-io "0.3.18"]
 ```
+
+[API docs](https://cljdoc.org/d/com.oscaro/tools-io/0.3.17/api/tools.io)
 
 ### `core/gzipped?`
 
@@ -255,16 +257,9 @@ Test if a file exists.
 (exists? "local-file-that-do-not-exists") ;=> false
 ```
 
-## Contributing
-
-Run the tests with:
-```shell
-lein test
-```
-
 ## License
 
-Copyright © 2016-2018 Oscaro.com
+Copyright © 2016-2019 Oscaro.com
 
 Distributed under the Eclipse Public License either version 1.0 or (at your
 option) any later version.
