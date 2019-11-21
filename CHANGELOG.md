@@ -1,6 +1,6 @@
 # tools.io Changelog
 
-## 0.3.18 (unreleased)
+## 0.3.18 (2019/11/21)
 * Fix `read-string-files` options: they were ignored after the first file
 * throw a more understandable exception for unsupported file protocole
 

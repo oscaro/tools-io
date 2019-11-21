@@ -5,7 +5,7 @@ Oscaro’s generic I/O tools collection.
 ## Usage
 
 ```clojure
-[com.oscaro/tools-io "0.3.17"]
+[com.oscaro/tools-io "0.3.18"]
 ```
 
 [API docs](https://cljdoc.org/d/com.oscaro/tools-io/0.3.17/api/tools.io)
