@@ -95,11 +95,14 @@
 
 (deftest load-config-files
   (testing "reading resource test.edn file"
-    (is (nil? (tio/load-config-file "not-exists")))
+    (is (nil? (tio/load-config-file "not-exists.edn")))
+    (is (thrown? AssertionError (tio/load-config-file "what-s-in-the-box?")) "unknown parser")
     (is (= 42 (:answer (tio/load-config-file (io/resource "test.edn")))) "load resource")
     (is (= 84 (:answer (tio/load-config-file (io/resource "test-with-reader-tag.edn") custom-edn-read))) "load resource with custom parser")
     (is (= 42 (:answer (tio/load-config-file "test.yml"))) "load filename as resource")
-    (is (= 42 (:answer (tio/load-config-file "test-resources/test.json"))) "load absolute filename")))
+    (is (= 42 (:answer (tio/load-config-file "test-resources/test.json"))) "load absolute filename")
+    (with-in-str "{:answer 42}"
+     (is (= 42 (:answer (tio/load-config-file *in* edn/read-string))) "load from stdin (protocol independant)"))))
 
 (deftest read-txt
   (testing "reading resource test.txt file"
