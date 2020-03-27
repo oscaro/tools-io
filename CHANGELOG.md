@@ -1,5 +1,9 @@
 # tools.io Changelog
 
+## 0.3.19 (2020/03/27)
+* Configuration files can be loaded from any protocol
+* Always use a slash when joining paths
+
 ## 0.3.18 (2019/11/21)
 * Fix `read-string-files` options: they were ignored after the first file
 * throw a more understandable exception for unsupported file protocole
