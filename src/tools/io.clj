@@ -340,9 +340,12 @@
     (instance? File filename) (.getPath ^File filename)
     :else (str filename)))
 
+(defn- fail-as-nil [f] (try (f) (catch Exception _ nil)))
+
 (defn load-config-file
   "read and parse a configuration file
-   edn, clj, json, js, yaml, yml supported"
+   edn, clj, json, js, yaml, yml supported
+   protocols supported are those of `tools.io.core/file-reader`"
   {:added "0.3.16"}
   ([filename]
    (when (some? filename)
@@ -351,9 +354,10 @@
            parse-fn (get config-parser (or (ext config-exts-equivalence) ext))]
        (load-config-file filename parse-fn))))
   ([filename parser]
+   {:pre [parser]}
     (let [path     (->file-path filename)
-          file     (as-file! filename)
-          raw      (try (slurp file) (catch Exception _ nil))]
+          raw      (or (fail-as-nil #(slurp filename))
+                       (fail-as-nil #(-> filename as-file! slurp))) ]
       (when raw
         (try
           (parser raw)
