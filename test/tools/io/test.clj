@@ -27,6 +27,8 @@
   (is (= "/foo/bar" (tio/join-path "/foo/" "bar")))
   (is (= "gs://bar/a/b/c" (tio/join-path "gs://bar" "a" "b" "c")))
 
+  (is (= "a/../b" (tio/join-path "a" ".." "b")))
+
   (is (thrown? AssertionError (tio/join-path nil)))
   (is (thrown? AssertionError (tio/join-path "gs://" "foo" nil "bar"))))
 

@@ -24,6 +24,18 @@
     (.substring s (count prefix))
     s))
 
+(defn- rstrip
+  [^String s ^String suffix]
+  (if (str/ends-with? s suffix)
+    (.substring s 0 (- (count s) (count suffix)))
+    s))
+
+(defn- strip
+  [^String s ^String trim]
+  (-> s
+      (lstrip trim)
+      (rstrip trim)))
+
 (defn strip-bom
   "Remove the BOM on a string if necessary.
    See https://en.wikipedia.org/wiki/Byte_order_mark"
@@ -60,8 +72,8 @@
     :post [(string? %)]}
    (let [[prefix x] (split-protocol x)
          is-root (str/starts-with? x "/")
-         parts (map (fn [part] (lstrip part "/")) (cons x xs))
-         path (str (when is-root "/") (apply io/file parts))]
+         parts (map (fn [part] (strip part "/")) (cons x xs))
+         path (str (when is-root "/") (str/join "/" (map io/file parts)))]
 
      (join-protocol prefix path))))
 
