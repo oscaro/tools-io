@@ -14,7 +14,9 @@ jobs:
   deploy:
     needs: [test]
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/devel'
+    runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Deploy
       run: lein deploy
       env:
