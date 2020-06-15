@@ -8,11 +8,12 @@
                  [circleci/clj-yaml "0.6.0"]
                  [org.clojure/data.csv "0.1.4"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
-  :deploy-repositories [["snapshots" {:url "https://clojars.org/repo"
+  ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
+  :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
                                       :username :env/clojars_username
                                       :password :env/clojars_password
                                       :sign-releases false}]
-                        ["releases"  {:url "https://clojars.org/repo"
+                        ["releases"  {:url "https://repo.clojars.org"
                                       :username :env/clojars_username
                                       :password :env/clojars_password
                                       :sign-releases false}]]
