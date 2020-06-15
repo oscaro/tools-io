@@ -3,7 +3,7 @@ name: Clojure CI
 on: [push]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -11,10 +11,12 @@ jobs:
       run: lein -U deps
     - name: Run tests
       run: lein test
-
+  deploy:
+    needs: [test]
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/devel'
+    steps:
     - name: Deploy
       run: lein deploy
-      if: github.ref == 'refs/head/master' || github.ref == 'refs/head/devel'
       env:
         CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
         CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
