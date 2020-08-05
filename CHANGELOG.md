@@ -1,4 +1,7 @@
 # tools.io Changelog
+ 
+## 0.3.20 (2020/08/05)
+* Bump cheshire 
 
 ## 0.3.19 (2020/03/27)
 * Configuration files can be loaded from any protocol
