@@ -4,9 +4,7 @@ Oscaro’s generic I/O tools collection.
 
 ## Usage
 
-```clojure
-[com.oscaro/tools-io "0.3.19"]
-```
+[![Clojars Project](https://img.shields.io/clojars/v/com.oscaro/tools-io.svg)](https://clojars.org/com.oscaro/tools-io)
 
 [API docs](https://cljdoc.org/d/com.oscaro/tools-io/0.3.17/api/tools.io)
 
