@@ -1,7 +1,10 @@
 # tools.io Changelog
- 
+
+## 0.3.21 (2021/03/18)
+* Bump clojure, data.csv, clj-yaml (now from clj-commons), tools.namespace
+
 ## 0.3.20 (2020/08/05)
-* Bump cheshire 
+* Bump cheshire
 
 ## 0.3.19 (2020/03/27)
 * Configuration files can be loaded from any protocol
