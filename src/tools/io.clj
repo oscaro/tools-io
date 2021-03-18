@@ -126,7 +126,7 @@
    caller's responsability to close the file using tools.io.core/close! when
    it’s done."
   {:added "0.3.16"}
-  [{:keys [^BufferedWriter stream] :as file} line]
+  [{:keys [^BufferedWriter stream] :as _file} line]
   (.write stream ^String line)
   (when-not (str/ends-with? line "\n")
     (.write stream "\n"))
