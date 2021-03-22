@@ -1,6 +1,6 @@
 # tools.io Changelog
 
-## 0.3.21 (2021/03/18)
+## 0.3.21 (2021/03/22)
 * Bump clojure, data.csv, clj-yaml (now from clj-commons), tools.namespace
 
 ## 0.3.20 (2020/08/05)
