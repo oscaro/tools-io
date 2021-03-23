@@ -1,4 +1,4 @@
-(defproject com.oscaro/tools-io "0.3.20"
+(defproject com.oscaro/tools-io "0.3.22-SNAPSHOT"
   :description "Oscaro's generic I/O tools collection"
   :url "https://github.com/oscaro/tools-io"
   :license {:name "Eclipse Public License"
@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [cheshire "5.10.0"]
                  [circleci/clj-yaml "0.6.0"]
-                 [org.clojure/data.csv "0.1.4"]]
+                 [org.clojure/data.csv "0.1.4"]
+                 [org.apache.commons/commons-compress "1.20"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"

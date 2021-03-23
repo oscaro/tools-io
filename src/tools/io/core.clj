@@ -2,7 +2,8 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str])
   (:import [java.io File Closeable Reader Writer]
-           [java.util.zip GZIPInputStream GZIPOutputStream])
+           [java.util.zip GZIPInputStream GZIPOutputStream ]
+           (org.apache.commons.compress.compressors.bzip2 BZip2CompressorInputStream))
   (:gen-class))
 
 (defonce file-preds (atom {}))
@@ -68,18 +69,23 @@
   [filename]
   (re-find #"(?i)\.gz(?:ip)?$" (str filename)))
 
+(defn bz2zipped?
+  "Tests if a filename ends with .bz2"
+  [filename]
+  (re-find #"(?i)\.bz2?$" (str filename)))
+
 (defn input-stream
   "Returns an input-stream, with support of gzip compression."
   ([filename] (input-stream filename nil))
   ([filename options]
    (let [is (mk-input-stream filename options)]
-     (if (gzipped? filename)
-       (update is :stream #(GZIPInputStream. %))
-       is))))
+     (cond-> is
+       (gzipped? filename) (update :stream #(GZIPInputStream. %))
+       (bz2zipped? filename) (update :stream #(BZip2CompressorInputStream. %))))))
 
 (defn output-stream
   "Returns an output-stream, with support of gzip compression."
-  ([filename] (output-stream filename nil))
+  ([filename] (output-stream filename nil)  )
   ([filename options]
    (let [os (mk-output-stream filename options)]
      (if (gzipped? filename)
