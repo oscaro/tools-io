@@ -3,11 +3,12 @@
   :url "https://github.com/oscaro/tools-io"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[org.clojure/clojure "1.10.3"]
                  [cheshire "5.10.0"]
                  [circleci/clj-yaml "0.6.0"]
-                 [org.clojure/data.csv "0.1.4"]
-                 [org.apache.commons/commons-compress "1.20"]]
+                 [clj-commons/clj-yaml "0.7.106"]              
+                 [org.apache.commons/commons-compress "1.20"]
+                 [org.clojure/data.csv "1.0.0"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
@@ -30,5 +31,5 @@
   :profiles {:dev {:global-vars {*warn-on-reflection* true}
                    :source-paths ["dev"]
                    :resource-paths ["test-resources"]
-                   :dependencies [[org.clojure/tools.namespace "0.2.11"]]}}
+                   :dependencies [[org.clojure/tools.namespace "1.1.0"]]}}
   :repl-options {:init-ns user})

@@ -132,8 +132,8 @@
     (loop []
       (let [size (.read input buffer)]
         (when (pos? size)
-          (do (.write output buffer 0 size)
-              (recur)))))))
+          (.write output buffer 0 size)
+          (recur))))))
 
 ;; Default Hooks
 ;; =============
@@ -153,7 +153,7 @@
   {:stream (io/output-stream filename :append (:append options false))})
 
 (defmethod list-files :base
-  [path & [options]]
+  [path & [_options]]
   (let [^File f (io/file path)]
     (cond
       (.isDirectory f)
@@ -180,7 +180,7 @@
 
 
 (defmethod exists? :base
-  [filename & [options]]
+  [filename & [_options]]
   (when filename
     (try
       (.exists (io/as-file filename))
@@ -215,5 +215,5 @@
            (= *in* filename)))
 
 (defmethod mk-input-stream :stdin
-  [filename & [options]]
+  [filename & [_options]]
   {:stream filename :close-fn (fn noop [_])})

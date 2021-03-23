@@ -4,11 +4,9 @@ Oscaro’s generic I/O tools collection.
 
 ## Usage
 
-```clojure
-[com.oscaro/tools-io "0.3.19"]
-```
+[![Clojars Project](https://img.shields.io/clojars/v/com.oscaro/tools-io.svg)](https://clojars.org/com.oscaro/tools-io)
 
-[API docs](https://cljdoc.org/d/com.oscaro/tools-io/0.3.17/api/tools.io)
+[API docs](https://cljdoc.org/d/com.oscaro/tools-io/0.3.21/api/tools.io)
 
 ### `core/gzipped?`
 
@@ -259,7 +257,7 @@ Test if a file exists.
 
 ## License
 
-Copyright © 2016-2019 Oscaro.com
+Copyright © 2016-2021 Oscaro.com
 
 Distributed under the Eclipse Public License either version 1.0 or (at your
 option) any later version.
