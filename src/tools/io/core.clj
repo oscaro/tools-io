@@ -47,13 +47,12 @@
   {:pre [(set? protocols)]}
   (fn [filename]
     (when-not (instance? Reader filename)
-      (let [filename (str filename)]
-        (or (not (str/includes? filename "://"))
-            (-> filename
-                (str/split #"://" 2)
-                first
-                str/lower-case
-                protocols))))))
+      (-> filename
+          str
+          (str/split #"://" 2)
+          first
+          str/lower-case
+          protocols))))
 
 (defmulti mk-input-stream
   "Returns an input stream with any implementation."
@@ -136,7 +135,13 @@
 ;; -------------
 
 (register-file-pred!
-  :base (mk-file-protocol-checker #{"file" ""}))
+  :base (some-fn
+          (mk-file-protocol-checker #{"file"})
+          (fn filename-with-no-protocol?
+            [filename]
+            (and
+              (not (instance? Reader filename))
+              (not (str/includes? (str filename) "://"))))))
 
 (defmethod mk-input-stream :base
   [filename & [options]]
