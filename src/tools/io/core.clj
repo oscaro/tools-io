@@ -46,7 +46,7 @@
   [protocols]
   {:pre [(set? protocols)]}
   (fn [filename]
-    (when-not (instance? java.io.Reader filename)
+    (when-not (instance? Reader filename)
       (let [filename (str filename)]
         (or (not (str/includes? filename "://"))
             (-> filename

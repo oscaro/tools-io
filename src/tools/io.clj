@@ -123,7 +123,7 @@
 
 (defn line-write
   "Write one line in a file created with tools.io.core/file-writer. It is the
-   caller's responsability to close the file using tools.io.core/close! when
+   caller's responsibility to close the file using tools.io.core/close! when
    it’s done."
   {:added "0.3.16"}
   [{:keys [^BufferedWriter stream] :as _file} line]
@@ -142,7 +142,7 @@
       (core/close! file))))
 
 (def ^{:doc "Alias of tools.io.core/list-files for backward compatibility."
-       :arglists '([path & [options]])} list-files tools.io.core/list-files)
+       :arglists '([path & [options]])} list-files core/list-files)
 
 (defn read-string-format-file-fn
   "Builder for a file-reader function."
