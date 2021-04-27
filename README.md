@@ -168,7 +168,7 @@ return a seq of directory under the path directory.
 
 examples
 ```clojure
-(doall (map println (list-files "gs://my-bucket/dir/")))
+(doall (map println (list-dirs "gs://my-bucket/dir/")))
 ;gs://my-bucket/dir/20160902/
 ;gs://my-bucket/dir/20160902/
 ;gs://my-bucket/dir/20160902/
