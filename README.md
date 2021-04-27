@@ -156,6 +156,26 @@ examples
 ;/home/alice/dir/20160902/animals-aaaaaaaaae.jsons.gz
 ```
 
+### `list-dirs`
+
+return a seq of directory under the path directory.
+
+**arguments**:
+- path
+- [options]
+
+**returns**: seq of string
+
+examples
+```clojure
+(doall (map println (list-files "gs://my-bucket/dir/")))
+;gs://my-bucket/dir/20160902/
+;gs://my-bucket/dir/20160902/
+;gs://my-bucket/dir/20160902/
+;gs://my-bucket/dir/20160902/
+;gs://my-bucket/dir/20160902/
+```
+
 ### `load-config-file`
 
 read and parse a configuration file.
