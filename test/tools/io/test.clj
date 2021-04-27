@@ -259,6 +259,34 @@
           (empty? (tio/list-files (tio/join-path dirname "foo/")))
           (empty? (tio/list-files (tio/join-path dirname "aaa/x/"))))))))
 
+(deftest list-dirs
+  (testing "list dirs from existant dir"
+    (tio/with-tempdir [dirname]
+      (let [files (->> ["foo"
+                        "bar/x"
+                        "quux/x"
+                        "baz"]
+                       (map #(format "%s/%s" dirname %)))]
+        (doseq [path files]
+          (io/make-parents path)
+          (spit path ""))
+        (is (= 2 (count (tio/list-dirs dirname)))))))
+  (testing "list dirs from existant without subfolders"
+    (is (= 0 (count (tio/list-dirs "test-resources/test")))))
+  (testing "list dirs from existant with trailing slash + subfolders"
+    (tio/with-tempdir [dirname]
+      (let [files (->> ["i"
+                        "love/x/hh"
+                        "testing/x/hey"
+                        "clojure"
+                        "code/itstrue"]
+                       (map #(format "%s/%s/" dirname %)))]
+        (doseq [path files]
+          (io/make-parents path)
+          (spit path ""))
+        (is (= 3 (count (tio/list-dirs dirname)))))))
+  (testing "list dirs from non existant directory"
+    (is (= 0 (count (tio/list-dirs "i'm broken ~~~"))))))
 
 (deftest with-tempfile-test
   (let [*filename* (atom nil)
