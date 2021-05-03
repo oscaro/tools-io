@@ -175,16 +175,10 @@
 (defmethod list-dirs :base
   [path & [_options]]
   (let [^File f (io/file path)]
-    (cond
-      (.isDirectory f)
-        (->> (.listFiles f)
-             (filter #(.isDirectory ^File %))
-             (map #(.getPath ^File %)))
-
-       ;; trailing slash but not a directory: nil
-       (str/ends-with? path File/separator)
-       nil
-       :else nil)))
+    (when (.isDirectory f)
+      (->> (.listFiles f)
+           (filter #(.isDirectory ^File %))
+           (map #(.getPath ^File %))))))
 
 (defmethod delete-file :base
   [path & [options]]

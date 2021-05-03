@@ -144,8 +144,10 @@
 (def ^{:doc "Alias of tools.io.core/list-files for backward compatibility."
        :arglists '([path & [options]])} list-files tools.io.core/list-files)
 
-(def ^{:doc "Alias of tools.io.core/list-dirs for backward compatibility."
-       :arglists '([path & [options]])} list-dirs tools.io.core/list-dirs)
+(def ^{:doc "Alias of tools.io.core/list-dirs."
+       :added "0.3.22"
+       :arglists '([path & [options]])}
+  list-dirs tools.io.core/list-dirs)
 
 (defn read-string-format-file-fn
   "Builder for a file-reader function."
