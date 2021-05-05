@@ -109,6 +109,10 @@
   "Returns a seq of filenames with provided path as prefix."
   get-file-type)
 
+(defmulti list-dirs
+  "Return a seq of directories with provided path as prefix"
+  get-file-type)
+
 (defmulti delete-file
   "Deletes a file with any implementation."
   get-file-type)
@@ -172,6 +176,14 @@
                            (and (.isFile file)
                                 (str/starts-with? (.getName file) prefix))))
                  (map (fn [^File f] (.getPath f)))))))))
+
+(defmethod list-dirs :base
+  [path & [_options]]
+  (let [^File f (io/file path)]
+    (when (.isDirectory f)
+      (->> (.listFiles f)
+           (filter #(.isDirectory ^File %))
+           (map #(.getPath ^File %))))))
 
 (defmethod delete-file :base
   [path & [options]]
