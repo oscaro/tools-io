@@ -185,6 +185,17 @@
        (finally
           (cio/unregister-file-pred! file-type)))))
 
+(deftest mk-file-protocol-checker
+  (let [checker (#'cio/mk-file-protocol-checker #{"foo" "bar"})]
+    (are [ok-path] (checker ok-path)
+                   "foo://something"
+                   "bar://something"
+                   "FOO://something")
+    (are [not-ok-path] (not (checker not-ok-path))
+                       "http://something"
+                       "/home/linus/SECRET"
+                       "hello")))
+
 (deftest read-from-stdin
   (with-in-str "{\"toto\": 42}"
     (is (= [{:toto 42}]
