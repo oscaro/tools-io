@@ -1,8 +1,7 @@
 # tools.io Changelog
 
-## Unreleased
-
-
+## 0.3.22 (2021/04/27)
+* Added `list-dirs` support.
 
 ## 0.3.21 (2021/03/22)
 * Bump clojure, data.csv, clj-yaml (now from clj-commons), tools.namespace
