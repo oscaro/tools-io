@@ -1,5 +1,8 @@
 # tools.io Changelog
 
+## Unreleased
+* Bump cheshire, clj-yaml
+
 ## 0.3.21 (2021/03/22)
 * Bump clojure, data.csv, clj-yaml (now from clj-commons), tools.namespace
 
