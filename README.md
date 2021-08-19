@@ -6,7 +6,7 @@ Oscaro’s generic I/O tools collection.
 
 [![Clojars Project](https://img.shields.io/clojars/v/com.oscaro/tools-io.svg)](https://clojars.org/com.oscaro/tools-io)
 
-[API docs](https://cljdoc.org/d/com.oscaro/tools-io/0.3.21/api/tools.io)
+[![cljdoc badge](https://cljdoc.org/badge/com.oscaro/clj-gcloud-common)](https://cljdoc.org/d/com.oscaro/tools-io/CURRENT)
 
 ### `core/gzipped?`
 

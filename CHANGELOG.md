@@ -1,6 +1,6 @@
 # tools.io Changelog
 
-## Unreleased
+## 0.3.22 (2021/08/19)
 * Bump cheshire, clj-yaml
 
 ## 0.3.21 (2021/03/22)
@@ -15,8 +15,7 @@
 
 ## 0.3.18 (2019/11/21)
 * Fix `read-string-files` options: they were ignored after the first file
-* throw a more understandable exception for unsupported file protocole
-
+* throw a more understandable exception for unsupported file protocol
 
 ## 0.3.17 (2019/03/27)
 * repl: some reflection warnings removed
