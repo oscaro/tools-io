@@ -4,8 +4,8 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.10.3"]
-                 [cheshire "5.10.0"]
-                 [clj-commons/clj-yaml "0.7.106"]
+                 [cheshire "5.10.1"]
+                 [clj-commons/clj-yaml "0.7.107"]
                  [org.clojure/data.csv "1.0.0"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
