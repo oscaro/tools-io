@@ -29,5 +29,5 @@
   :profiles {:dev {:global-vars {*warn-on-reflection* true}
                    :source-paths ["dev"]
                    :resource-paths ["test-resources"]
-                   :dependencies [[org.clojure/tools.namespace "1.1.0"]]}}
+                   :dependencies [[org.clojure/tools.namespace "1.2.0"]]}}
   :repl-options {:init-ns user})
