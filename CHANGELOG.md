@@ -1,6 +1,6 @@
 # tools.io Changelog
 
-## Unreleased
+## 0.3.23 (2021/12/13)
 * Added `list-dirs` support.
 * Bump tools.namespace.
 
