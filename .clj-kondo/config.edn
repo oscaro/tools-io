@@ -1,0 +1,3 @@
+{:linters
+ {:unsorted-required-namespaces {:level :warning}
+  :unresolved-symbol {:exclude [(tools.io/with-tempdir) (tools.io/with-tempfile)]}}}

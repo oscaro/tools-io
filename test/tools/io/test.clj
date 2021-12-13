@@ -1,23 +1,22 @@
 (ns tools.io.test
-  (:require [clojure.test :refer :all]
-            [clojure.pprint :refer [pprint]]
-            [clojure.string :as str]
+  (:require [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [cheshire.core :as json]
+            [clojure.string :as str]
+            [clojure.test :refer [are deftest is testing]]
             [tools.io :as tio]
-            [tools.io.core :as cio]
-            [clojure.edn :as edn])
-  (:import [java.io File]))
+            [tools.io.core :as cio])
+  (:import (java.io File)))
 
 
-(deftest strip-bom
+(deftest strip-bom-test
   (testing "bom"
     (is (= "foo" (tio/strip-bom "\uFEFFfoo"))))
   (testing "no bom"
     (is (= "foo" (tio/strip-bom "foo")))
     (is (= "" (tio/strip-bom "")))))
 
-(deftest join-path
+(deftest join-path-test
   (is (= "foo/bar" (tio/join-path "foo/bar")))
   (is (= "foo/bar" (tio/join-path "foo" "bar")))
   (is (= "foo/bar" (tio/join-path "foo/" "bar")))
@@ -32,7 +31,7 @@
   (is (thrown? AssertionError (tio/join-path nil)))
   (is (thrown? AssertionError (tio/join-path "gs://" "foo" nil "bar"))))
 
-(deftest basename
+(deftest basename-test
   (are [expected fullpath] (= expected (tio/basename fullpath))
     ""    "/"
     ""    "///////"
@@ -44,7 +43,7 @@
     "ya"  "gs://foo-bar-uqx/1/2/ya"
     "hey.gz" "/hey.gz"))
 
-(deftest parent
+(deftest parent-test
   (are [expected path] (= expected (tio/parent path))
        nil ""
        nil "/"
@@ -54,10 +53,9 @@
        "foo" "foo/bar"
        "/a/b/c/d" "/a/b/c/d/foo.edns"
        "gs://foo/bar" "gs://foo/bar/qux"
-       "gs://foo/bar" "gs://foo/bar/qux/"
-       ))
+       "gs://foo/bar" "gs://foo/bar/qux/"))
 
-(deftest splitext
+(deftest splitext-test
   (are [expected fullpath] (= expected (tio/splitext fullpath))
     ["" ""]        ""
     ["/" ""]       "/"
@@ -70,7 +68,7 @@
 
     ["http://www.google.com/index" "html"] "http://www.google.com/index.html"))
 
-(deftest expand-home
+(deftest expand-home-test
   (let [home (System/getProperty "user.home")]
     (are [expected path] (= expected (tio/expand-home path))
          ""   ""
@@ -78,7 +76,7 @@
          home home
          (str home "/foo/bar") "~/foo/bar")))
 
-(deftest read-jsons
+(deftest read-jsons-test
   (testing "reading resource json.gz file"
     (is (= 4 (count (tio/read-jsons-file (io/resource "good.jsons.gz"))))))
   (testing "reading resource json file with empty lines"
@@ -95,7 +93,7 @@
 (defn- custom-edn-read [s]
   (edn/read-string {:readers {'double #(* % 2)}} s))
 
-(deftest load-config-files
+(deftest load-config-files-test
   (testing "reading resource test.edn file"
     (is (nil? (tio/load-config-file "not-exists.edn")))
     (is (thrown? AssertionError (tio/load-config-file "what-s-in-the-box?")) "unknown parser")
@@ -106,13 +104,13 @@
     (with-in-str "{:answer 42}"
      (is (= 42 (:answer (tio/load-config-file *in* edn/read-string))) "load from stdin (protocol independant)"))))
 
-(deftest read-txt
+(deftest read-txt-test
   (testing "reading resource test.txt file"
     (is (= "answer:42" (reduce str (tio/read-text-file (io/resource "test.txt")))))))
 
-(deftest read-write-txt
+(deftest read-write-txt-test
   (let [text ["don't" "worry" "about" "the" "sardines."]
-        filename ".tmp-test-rw-text"]
+        filename ".read-write-tmp-test-rw-text"]
     (io/delete-file filename true)
     (try
       (tio/write-text-file filename text)
@@ -121,9 +119,9 @@
       (finally
         (io/delete-file filename true)))))
 
-(deftest spit-slurp
+(deftest spit-slurp-test
   (let [text "Hey\n\nI \njust\n\n  met \n\tyou\n\n"
-        filename ".tmp-test-rw-text"]
+        filename ".spit-slurp-tmp-test-rw-text"]
     (io/delete-file filename true)
     (try
       (tio/spit filename text)
@@ -131,8 +129,8 @@
       (finally
         (io/delete-file filename true)))))
 
-(deftest line-write
-  (let [filename ".tmp-test-rw-text"]
+(deftest line-write-test
+  (let [filename ".line-write-tmp-test-rw-text"]
     (io/delete-file filename true)
     (try
       (let [f (cio/file-writer filename)]
@@ -145,9 +143,9 @@
       (finally
         (io/delete-file filename true)))))
 
-(deftest lines-write
+(deftest lines-write-test
   (let [text ["We're" "no" "strangers" "to" "love"]
-        filename ".tmp-test-rw-text"]
+        filename ".lines-write-tmp-test-rw-text"]
     (io/delete-file filename true)
     (try
       (let [f (cio/file-writer filename)]
@@ -157,7 +155,7 @@
       (finally
         (io/delete-file filename true)))))
 
-(deftest get-default-file-types
+(deftest get-default-file-types-test
   (are [ftype filename] (= ftype (cio/get-file-type filename))
        :base "file://foo"
        :base "/foo"
@@ -171,7 +169,7 @@
 
        :stdin *in*))
 
-(deftest custom-file-type
+(deftest custom-file-type-test
   (let [file-type :test1234
         filename "test1234://foobar"]
     (is (thrown? Exception (cio/get-file-type filename)))
@@ -185,7 +183,7 @@
        (finally
           (cio/unregister-file-pred! file-type)))))
 
-(deftest mk-file-protocol-checker
+(deftest mk-file-protocol-checker-test
   (let [checker (#'cio/mk-file-protocol-checker #{"foo" "bar"})]
     (are [ok-path] (checker ok-path)
                    "foo://something"
@@ -196,7 +194,7 @@
                        "/home/linus/SECRET"
                        "hello")))
 
-(deftest read-from-stdin
+(deftest read-from-stdin-test
   (with-in-str "{\"toto\": 42}"
     (is (= [{:toto 42}]
            (tio/read-jsons-file *in*))))
@@ -221,7 +219,7 @@
         (finally (.delete from) (.delete to))))))
 
 
-(deftest list-files
+(deftest list-files-test
   (testing "list files from an existant dir"
     (is (= 5 (count (tio/list-files "test-resources/test")))))
   (testing "list files from an existant file"
@@ -270,7 +268,7 @@
           (empty? (tio/list-files (tio/join-path dirname "foo/")))
           (empty? (tio/list-files (tio/join-path dirname "aaa/x/"))))))))
 
-(deftest list-dirs
+(deftest list-dirs-test
   (testing "list dirs from existant dir"
     (tio/with-tempdir [dirname]
       (let [files (->> ["foo"
@@ -328,7 +326,7 @@
 
     (is (not (.exists (io/as-file @*dirname*))))))
 
-(deftest exists?
+(deftest exists?-test
   (testing "exists? with existant dir"
     (is (tio/exists? "test-resources/")))
   (testing "exists? with existant file"
