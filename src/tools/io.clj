@@ -1,17 +1,19 @@
 (ns tools.io
   (:refer-clojure :rename {slurp core-slurp
                            spit  core-spit})
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]
-            [cheshire.core :as json]
-            [clojure.edn :as edn]
-            [clj-yaml.core :as yaml]
-            [clojure.data.csv :as csv]
-            [tools.io.core :as core])
-  (:import [java.io BufferedReader BufferedWriter File]
-           [java.net URL]
-           [java.nio.file Path Files]
-           [java.nio.file.attribute FileAttribute]))
+  (:require
+   [cheshire.core :as json]
+   [clj-yaml.core :as yaml]
+   [clojure.edn :as edn]
+   [clojure.data.csv :as csv]
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [tools.io.core :as core])
+  (:import
+   [java.io BufferedReader BufferedWriter File]
+   [java.net URL]
+   [java.nio.file Path Files]
+   [java.nio.file.attribute FileAttribute]))
 
 
 ;todo: use https://github.com/pjstadig/reducible-stream/
