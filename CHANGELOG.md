@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Added `list-dirs` support.
+* Bump tools.namespace.
 
 ## 0.3.22 (2021/08/19)
 * Bump cheshire, clj-yaml
