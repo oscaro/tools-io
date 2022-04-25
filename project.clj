@@ -1,4 +1,4 @@
-(defproject com.oscaro/tools-io "0.3.24-SNAPSHOT"
+(defproject com.oscaro/tools-io "0.3.24"
   :description "Oscaro's generic I/O tools collection"
   :url "https://github.com/oscaro/tools-io"
   :license {:name "Eclipse Public License"

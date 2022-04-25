@@ -1,5 +1,9 @@
 # tools.io Changelog
 
+## 0.3.24 (2022/04/25)
+* replace cheshire with charred.
+* Bump deps: clojure (1.11.1), clj-yaml. data.csv.
+
 ## 0.3.23 (2021/12/13)
 * Added `list-dirs` support.
 * Bump tools.namespace.
