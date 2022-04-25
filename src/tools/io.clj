@@ -4,7 +4,6 @@
   (:require
    [charred.api :as charred]
    [clj-yaml.core :as yaml]
-   [clojure.data.csv :as csv]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
@@ -272,13 +271,13 @@
    (read-csv-file in nil))
   ([in stream-args & csv-args]
    (let [file (core/file-reader in stream-args)]
-     (apply csv/read-csv (:stream file) csv-args))))
+     (apply charred/read-csv (:stream file) csv-args))))
 
 (defn- write-csv-file*
   [out stream-args csv-args]
   (let [file (core/file-writer out stream-args)]
     (try
-      (apply csv/write-csv (:stream file) csv-args)
+      (apply charred/write-csv (:stream file) csv-args)
       (finally
         (core/close! file)))))
 

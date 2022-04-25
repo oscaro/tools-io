@@ -76,6 +76,18 @@
          home home
          (str home "/foo/bar") "~/foo/bar")))
 
+(deftest csv-test
+  (testing "CSV file manipulation"
+    (let [f (java.io.File/createTempFile "tool-io-tests" ".csv")
+          data [["abc" "def"]
+                ["ghi" "jkl"]]]
+      (tio/write-csv-file f data)
+      (is (= "abc,def\nghi,jkl\n" (slurp f))
+          "data should be dumped in CSV format")
+      (is (= data (tio/read-csv-file f))
+          "same data should be read from CSV file")
+      (.delete f))))
+
 (deftest read-jsons-test
   (testing "reading resource json.gz file"
     (is (= 4 (count (tio/read-jsons-file (io/resource "good.jsons.gz"))))))
