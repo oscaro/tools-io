@@ -1,5 +1,5 @@
 (ns tools.io.test
-  (:require [cheshire.core :as json]
+  (:require [charred.api :as charred]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -201,7 +201,7 @@
 
   (testing "long line"
     (let [obj (vec (range 9000))
-          s (json/generate-string obj)]
+          s (charred/write-json-str obj)]
     (with-in-str s
       (is (= [obj]
              (tio/read-jsons-file *in*)))))))

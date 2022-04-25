@@ -2,10 +2,10 @@
   (:refer-clojure :rename {slurp core-slurp
                            spit  core-spit})
   (:require
-   [cheshire.core :as json]
+   [charred.api :as charred]
    [clj-yaml.core :as yaml]
-   [clojure.edn :as edn]
    [clojure.data.csv :as csv]
+   [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
    [tools.io.core :as core])
@@ -231,13 +231,13 @@
 "return a lazy seq of parsed json objects from a [protocol://]jsons[.gz] file.
  warning: the seq must be entirely consumed before the file is closed."}
   read-jsons-file
-  (read-string-format-file-fn #(json/parse-string % true)))
+  (read-string-format-file-fn #(charred/read-json % :key-fn keyword)))
 
 (def ^{:added "0.3.16"
        :doc
 "write a seq of elements serialized as JSON in a [protocol://]jsons[.gz] file."}
   write-jsons-file
-  (write-string-file-fn json/generate-string))
+  (write-string-file-fn charred/write-json-str))
 
 (def ^{:added "0.3.16"
        :doc
@@ -322,7 +322,7 @@
 (def ^{:private true}
   config-parser {:edn  edn/read-string
                  :clj  read-string
-                 :json #(json/parse-string % true)
+                 :json #(charred/read-json % :key-fn keyword)
                  :yaml yaml/parse-string})
 
 (def ^{:private true}
