@@ -1,5 +1,9 @@
 # tools.io Changelog
 
+## 0.3.25 (2022/05/15)
+* use charred for csv serialization.
+* fix write-jsons-file indentation error.
+
 ## 0.3.24 (2022/04/25)
 * replace cheshire with charred.
 * Bump deps: clojure (1.11.1), clj-yaml. data.csv.
