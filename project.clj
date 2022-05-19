@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
 
                  [clj-commons/clj-yaml "0.7.108"]
-                 [com.cnuernber/charred "1.005"]]
+                 [com.cnuernber/charred "1.008"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
