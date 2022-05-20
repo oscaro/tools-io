@@ -236,7 +236,7 @@
        :doc
 "write a seq of elements serialized as JSON in a [protocol://]jsons[.gz] file."}
   write-jsons-file
-  (write-string-file-fn #(charred/write-json-str % :indent-str nil)))
+  (write-string-file-fn #(charred/write-json-str % :indent-str nil :escape-slash false)))
 
 (def ^{:added "0.3.16"
        :doc
