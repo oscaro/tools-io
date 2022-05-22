@@ -1,5 +1,10 @@
 # tools.io Changelog
 
+## 0.3.26 (2022/05/22)
+* bump charred and set options to resolve compatibility issues and
+  match previous behavior.
+* added json io tests.
+
 ## 0.3.25 (2022/05/15)
 * use charred for csv serialization.
 * fix write-jsons-file indentation error.
