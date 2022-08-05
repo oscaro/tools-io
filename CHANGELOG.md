@@ -1,5 +1,9 @@
 # tools.io Changelog
 
+## 0.3.27 (2022/08/04)
+* add csv io tests.
+* bump charred to 1.011.
+
 ## 0.3.26 (2022/05/22)
 * bump charred and set options to resolve compatibility issues and
   match previous behavior.
