@@ -60,3 +60,50 @@
                           slurp)]
             (is (= expected
                    rslt))))))))
+
+(deftest read-csv-file-test
+  (let [expected [["1" "2" "3" "4" "abc" "434.23"] ["10" "20" "30" "40" "edf" "1432.23123"]]
+        data "1,2,3,4,\"abc\",434.23\n10,20,30,40,\"edf\",1432.23123\n"]
+
+    (sut/with-tempdir [tmp-dir]
+      (testing "nominal case"
+        (let [file-path (sut/join-path tmp-dir "test.csvs")]
+          (write-fixture file-path data)
+
+          (let [rslt (sut/read-csv-file file-path)]
+            (is (= expected
+                   rslt)))))
+
+      (testing "with compression"
+        (let [file-path (sut/join-path tmp-dir "test.csvss.gz")]
+          (write-fixture file-path data)
+
+          (let [rslt (sut/read-csv-file file-path)]
+            (is (= expected
+                   rslt))))))))
+
+
+(deftest write-csv-file-test
+  (let [data [[1 2 3 4 "abc" 434.23]
+              [10 20 30 40 "edf" 1432.23123]]
+        expected "1,2,3,4,abc,434.23\n10,20,30,40,edf,1432.23123\n"]
+
+    (sut/with-tempdir [tmp-dir]
+      (testing "nominal case"
+        (let [file-path (sut/join-path tmp-dir "test.csvs")]
+          (sut/write-csv-file file-path data)
+
+          (let [rslt (slurp file-path)]
+            (is (= expected
+                   rslt)))))
+
+      (testing "with compression"
+        (let [file-path (sut/join-path tmp-dir "test.csvs.gz")]
+          (sut/write-csv-file file-path data)
+
+          (let [rslt (->> file-path
+                          (io/input-stream)
+                          (GZIPInputStream.)
+                          slurp)]
+            (is (= expected
+                   rslt))))))))
