@@ -150,6 +150,17 @@
        :arglists '([path & [options]])}
   list-dirs tools.io.core/list-dirs)
 
+
+(def ^{:doc "Alias of tools.io.core/zip-directory."
+       :added "0.3.29"
+       :arglists '([folder & [options]])}
+   zip-directory  tools.io.core/zip-directory)
+
+(def ^{:doc "Alias of tools.io.core/unzip-file."
+       :added "0.3.29"
+       :arglists '([zip-file & [options]])}
+  unzip-file  tools.io.core/unzip-file)
+
 (defn read-string-format-file-fn
   "Builder for a file-reader function."
   [read-fn]

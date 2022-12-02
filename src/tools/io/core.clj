@@ -2,7 +2,9 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str])
   (:import [java.io File Closeable Reader Writer]
-           [java.util.zip GZIPInputStream GZIPOutputStream])
+           [java.util.zip GZIPInputStream GZIPOutputStream ZipOutputStream
+            ZipEntry]
+           [org.apache.commons.compress.archivers.zip ZipFile ZipArchiveEntry])
   (:gen-class))
 
 (defonce file-preds (atom {}))
@@ -121,6 +123,14 @@
   "Returns `true` if filename exists"
   get-file-type)
 
+(defmulti zip-directory
+  "Create zip from target directory"
+  get-file-type)
+
+(defmulti unzip-file
+  "Unzip the targeted file to the current
+   directory. If not a Zip file, yield `nil`"
+  get-file-type)
 
 ;;Shamefully copied from clojure.java.io/do-copy because we hardly can reuse the do-copy multi-fn
 (defn copy
@@ -139,13 +149,13 @@
 ;; -------------
 
 (register-file-pred!
-  :base (some-fn
-          (mk-file-protocol-checker #{"file"})
-          (fn filename-with-no-protocol?
-            [filename]
-            (and
-              (not (instance? Reader filename))
-              (not (str/includes? (str filename) "://"))))))
+ :base (some-fn
+        (mk-file-protocol-checker #{"file"})
+        (fn filename-with-no-protocol?
+          [filename]
+          (and
+           (not (instance? Reader filename))
+           (not (str/includes? (str filename) "://"))))))
 
 (defmethod mk-input-stream :base
   [filename & [options]]
@@ -160,22 +170,22 @@
   (let [^File f (io/file path)]
     (cond
       (.isDirectory f)
-        (->> (file-seq f)
-             (filter #(.isFile ^File %))
-             (map #(.getPath ^File %)))
+      (->> (file-seq f)
+           (filter #(.isFile ^File %))
+           (map #(.getPath ^File %)))
 
       ;; trailing slash but not a directory: nil
       (str/ends-with? path File/separator)
-        nil
+      nil
 
       :else
-        (when-let [parent (.getParentFile f)]
-          (let [prefix (.getName f)]
-            (->> (.listFiles parent)
-                 (filter (fn [^File file]
-                           (and (.isFile file)
-                                (str/starts-with? (.getName file) prefix))))
-                 (map (fn [^File f] (.getPath f)))))))))
+      (when-let [parent (.getParentFile f)]
+        (let [prefix (.getName f)]
+          (->> (.listFiles parent)
+               (filter (fn [^File file]
+                         (and (.isFile file)
+                              (str/starts-with? (.getName file) prefix))))
+               (map (fn [^File f] (.getPath f)))))))))
 
 (defmethod list-dirs :base
   [path & [_options]]
@@ -197,13 +207,52 @@
       (.exists (io/as-file filename))
       (catch Exception _ false))))
 
+;; Zip disk primitives
+
+(defmethod zip-directory :base
+  [folder & {:keys [output-file
+                    absolute?]
+             :or {absolute? true}}]
+  (when output-file
+    (try
+      (with-open [zip (ZipOutputStream. (io/output-stream output-file))]
+        (let [folder  (if absolute? folder
+                          (.getName (io/file folder)))
+              files (file-seq (io/file folder))]
+          (doseq [f files
+                  :when (.isFile  ^File f)]
+            (.putNextEntry zip (ZipEntry. (.getPath ^File f)))
+            (io/copy f zip)
+            (.closeEntry zip))))
+      true
+      (catch Exception _ false))))
+
+(defmethod unzip-file :base
+  [filename & {:keys [output-folder overwrite?]
+               :or {overwrite? false}}]
+  (let [extension (str/lower-case (last (str/split filename #"\.")))]
+    (try
+      (when (and output-folder (= extension "zip"))
+        (with-open [z (ZipFile. (io/file filename))]
+          (doseq [^ZipArchiveEntry entry (enumeration-seq (.getEntries z))
+                  :when (not (.isDirectory ^ZipArchiveEntry entry))
+                  :let  [zs (.getInputStream z entry)
+                         out (io/file (str output-folder
+                                           java.io.File/separator
+                                           (.getName entry)))]]
+            (io/make-parents out)
+            (when (or (not (.exists out)) overwrite?)
+              (with-open [entry-o-s (io/output-stream out)]
+                (io/copy zs entry-o-s))))
+          true))
+      (catch Exception _ false))))
 
 ;; HTTP & HTTPS
 ;; ------------
 ;; Basic implementation.
 
 (register-file-pred!
-  :http (mk-file-protocol-checker #{"http" "https"}))
+ :http (mk-file-protocol-checker #{"http" "https"}))
 
 (defmethod mk-input-stream :http
   [filename & [options]]
@@ -222,8 +271,8 @@
 ;; -----
 
 (register-file-pred!
-  :stdin (fn [filename]
-           (= *in* filename)))
+ :stdin (fn [filename]
+          (= *in* filename)))
 
 (defmethod mk-input-stream :stdin
   [filename & [_options]]
