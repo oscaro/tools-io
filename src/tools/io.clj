@@ -321,7 +321,7 @@
 (def ^{:private true}
   config-parser {:edn  edn/read-string
                  :clj  read-string
-                 :json #(charred/read-json % :key-fn keyword)
+                 :json #(charred/read-json % :key-fn keyword :eof-error? false :eof-value nil)
                  :yaml yaml/parse-string})
 
 (def ^{:private true}
