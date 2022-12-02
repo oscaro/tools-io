@@ -345,3 +345,23 @@
     (is (tio/exists? "test-resources/test.txt")))
   (testing "exists? with an inexistant file"
     (is (not (tio/exists? "-i do no exists-")))))
+
+
+(deftest zip-test
+  (testing "zip correctly created"
+    (let [archive "/tmp/test.zip"
+          output "/tmp/extracted"]
+      (is (= true (tio/zip-directory (io/resource "zip-mock")
+                                     {:output-file archive
+                                      :absolute? true})))
+      (is (= true (tio/unzip-file archive {:output-folder output})))
+      (is (= 3 (count (tio/list-files output)))))
+    (let [archive "/tmp/test2.zip"
+          output "/tmp/extracted2"]
+      (is (= true (tio/zip-directory "test-ressources"
+                                     {:output-file archive
+                                      :absolute? false})))
+      (is (= true (tio/unzip-file archive {:output-folder output})))
+      ;;(is (= 3 (count (tio/list-files output))))
+      ;;(is (= {:hey true} (tio/read-edns-file "/tmp/extracted2/a.edn")))
+      )))

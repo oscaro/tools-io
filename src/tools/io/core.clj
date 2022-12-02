@@ -1,10 +1,10 @@
 (ns tools.io.core
   (:require [clojure.java.io :as io]
             [clojure.string :as str])
-  (:import [java.io File Closeable Reader Writer FileInputStream FileOutputStream]
+  (:import [java.io File Closeable Reader Writer]
            [java.util.zip GZIPInputStream GZIPOutputStream ZipOutputStream
-            ZipInputStream ZipEntry
-            ])
+            ZipEntry]
+           [org.apache.commons.compress.archivers.zip ZipFile ZipArchiveEntry])
   (:gen-class))
 
 (defonce file-preds (atom {}))
@@ -127,7 +127,7 @@
   "Create zip from target directory"
   get-file-type)
 
-(defmulti unzip-directory
+(defmulti unzip-file
   "Unzip the targeted file to the current
    directory. If not a Zip file, yield `nil`"
   get-file-type)
@@ -210,31 +210,42 @@
 ;; Zip disk primitives
 
 (defmethod zip-directory :base
-  [filename & {:keys [output-file] :as option}]
+  [folder & {:keys [output-file
+                    absolute?]
+             :or {absolute? true}}]
   (when output-file
-    (let [files (list-files filename)
-          fos (new FileOutputStream output-file)]
-      (with-open [archive (ZipOutputStream. fos)]
-        (println files)
-        (as-> (map (fn [file]
-                     (let [fis (FileInputStream. (io/file file))
-                           ze (ZipEntry. file)
-                           ]
-                       (.putNextEntry archive ze)
-                       (let [xout (java.io.ByteArrayOutputStream)
-                             ba (io/copy fis xout)]
-                         (.write archive xout))))
-                   files) $)))))
+    (try
+      (with-open [zip (ZipOutputStream. (io/output-stream output-file))]
+        (doseq [f (file-seq (io/file folder))
+                :when (.isFile  ^File f)]
+          (.putNextEntry zip (ZipEntry. (.getPath ^File f)))
+          (io/copy f zip)
+          (.closeEntry zip)))
+      true
+      (catch Exception _ false))))
 
-(comment
-  (zip-directory "/tmp/hsperfdata_iomonad" {:output-file "/tmp/out.zip"}))
 
-(defmethod unzip-directory :base
-  [filename & {:keys [] :as option}]
-  (let [extension (str/lower-case (last (str/split filename #".")))]
-    (when (= extension "zip")
-      (let []
-        ))))
+(println (str/replace (.getPath (io/file "/tmp/form-init3054960681265690539.clj")) "/tmp" ""))
+
+(defmethod unzip-file :base
+  [filename & {:keys [output-folder overwrite?]
+               :or {overwrite? false}}]
+  (let [extension (str/lower-case (last (str/split filename #"\.")))]
+    (try
+      (when (and output-folder (= extension "zip"))
+        (with-open [z (ZipFile. (io/file filename))]
+          (doseq [^ZipArchiveEntry entry (enumeration-seq (.getEntries z))
+                  :when (not (.isDirectory ^ZipArchiveEntry entry))
+                  :let  [zs (.getInputStream z entry)
+                         out (io/file (str output-folder
+                                           java.io.File/separator
+                                           (.getName entry)))]]
+            (io/make-parents out)
+            (when (or (not (.exists out)) overwrite?)
+              (with-open [entry-o-s (io/output-stream out)]
+                (io/copy zs entry-o-s))))
+          true))
+      (catch Exception _ false))))
 
 ;; HTTP & HTTPS
 ;; ------------
