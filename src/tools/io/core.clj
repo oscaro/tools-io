@@ -216,16 +216,16 @@
   (when output-file
     (try
       (with-open [zip (ZipOutputStream. (io/output-stream output-file))]
-        (doseq [f (file-seq (io/file folder))
-                :when (.isFile  ^File f)]
-          (.putNextEntry zip (ZipEntry. (.getPath ^File f)))
-          (io/copy f zip)
-          (.closeEntry zip)))
+        (let [folder  (if absolute? folder
+                          (.getName (io/file folder)))
+              files (file-seq (io/file folder))]
+          (doseq [f files
+                  :when (.isFile  ^File f)]
+            (.putNextEntry zip (ZipEntry. (.getPath ^File f)))
+            (io/copy f zip)
+            (.closeEntry zip))))
       true
       (catch Exception _ false))))
-
-
-(println (str/replace (.getPath (io/file "/tmp/form-init3054960681265690539.clj")) "/tmp" ""))
 
 (defmethod unzip-file :base
   [filename & {:keys [output-folder overwrite?]
