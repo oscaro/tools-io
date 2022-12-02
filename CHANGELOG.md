@@ -1,5 +1,9 @@
 # tools.io Changelog
 
+## 0.3.28 (2022/12/02)
+* additional charred/read-json opts to match cheshire behavior.
+* bump charred to 1.026, clj-yaml to 1.0.26.
+
 ## 0.3.27 (2022/08/04)
 * add csv io tests.
 * bump charred to 1.011.
