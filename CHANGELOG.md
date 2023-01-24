@@ -1,5 +1,9 @@
 # tools.io Changelog
 
+## 0.3.29 (2023/01/24)
+* zip/unzip support.
+* bump charred 1.019, commons-compress 1.22.
+
 ## 0.3.28 (2022/12/02)
 * additional charred/read-json opts to match cheshire behavior.
 * bump charred to 1.026, clj-yaml to 1.0.26.
