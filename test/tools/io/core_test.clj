@@ -1,11 +1,12 @@
-(ns tools.io.test
-  (:require [charred.api :as charred]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.string :as str]
-            [clojure.test :refer [are deftest is testing]]
-            [tools.io :as tio]
-            [tools.io.core :as cio])
+(ns tools.io.core-test
+  (:require
+   [charred.api :as charred]
+   [clojure.edn :as edn]
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [clojure.test :refer [are deftest is testing]]
+   [tools.io :as tio]
+   [tools.io.core :as sut])
   (:import (java.io File)))
 
 
@@ -112,7 +113,7 @@
     (is (= 42 (:answer (tio/load-config-file (io/resource "test.edn")))) "load resource")
     (is (= 84 (:answer (tio/load-config-file (io/resource "test-with-reader-tag.edn") custom-edn-read))) "load resource with custom parser")
     (is (= 42 (:answer (tio/load-config-file "test.yml"))) "load filename as resource")
-    (is (= 42 (:answer (tio/load-config-file "test-resources/test.json"))) "load absolute filename")
+    (is (= 42 (:answer (tio/load-config-file "test/resources/test.json"))) "load absolute filename")
     (with-in-str "{:answer 42}"
      (is (= 42 (:answer (tio/load-config-file *in* edn/read-string))) "load from stdin (protocol independant)"))))
 
@@ -145,11 +146,11 @@
   (let [filename ".line-write-tmp-test-rw-text"]
     (io/delete-file filename true)
     (try
-      (let [f (cio/file-writer filename)]
+      (let [f (sut/file-writer filename)]
         (tio/line-write f "foo")
         (tio/line-write f "bar\n")
         (tio/line-write f "qux")
-        (cio/close! f))
+        (sut/close! f))
       (is (= ["foo" "bar" "qux"]
              (tio/read-text-file filename)))
       (finally
@@ -160,7 +161,7 @@
         filename ".lines-write-tmp-test-rw-text"]
     (io/delete-file filename true)
     (try
-      (let [f (cio/file-writer filename)]
+      (let [f (sut/file-writer filename)]
         (tio/lines-write f text))
       (is (= text
              (tio/read-text-file filename)))
@@ -168,7 +169,7 @@
         (io/delete-file filename true)))))
 
 (deftest get-default-file-types-test
-  (are [ftype filename] (= ftype (cio/get-file-type filename))
+  (are [ftype filename] (= ftype (sut/get-file-type filename))
        :base "file://foo"
        :base "/foo"
        :base "../foo"
@@ -184,19 +185,19 @@
 (deftest custom-file-type-test
   (let [file-type :test1234
         filename "test1234://foobar"]
-    (is (thrown? Exception (cio/get-file-type filename)))
+    (is (thrown? Exception (sut/get-file-type filename)))
 
     (try
-       (cio/register-file-pred!
+       (sut/register-file-pred!
          file-type #(str/starts-with? (str %) "test1234://"))
 
-       (is (= file-type (cio/get-file-type filename)))
+       (is (= file-type (sut/get-file-type filename)))
 
        (finally
-          (cio/unregister-file-pred! file-type)))))
+          (sut/unregister-file-pred! file-type)))))
 
 (deftest mk-file-protocol-checker-test
-  (let [checker (#'cio/mk-file-protocol-checker #{"foo" "bar"})]
+  (let [checker (#'sut/mk-file-protocol-checker #{"foo" "bar"})]
     (are [ok-path] (checker ok-path)
                    "foo://something"
                    "bar://something"
@@ -233,10 +234,10 @@
 
 (deftest list-files-test
   (testing "list files from an existant dir"
-    (is (= 5 (count (tio/list-files "test-resources/test")))))
+    (is (= 5 (count (tio/list-files "test/resources/test")))))
   (testing "list files from an existant file"
-    (is (= "test-resources/test.txt"
-           (first (tio/list-files "test-resources/test.txt")))))
+    (is (= "test/resources/test.txt"
+           (first (tio/list-files "test/resources/test.txt")))))
   (testing "list files from an inexistant dir"
     (is (empty? (tio/list-files "-i do no exists-"))))
 
@@ -293,7 +294,7 @@
           (spit path ""))
         (is (= 2 (count (tio/list-dirs dirname)))))))
   (testing "list dirs from existant without subfolders"
-    (is (= 0 (count (tio/list-dirs "test-resources/test")))))
+    (is (= 0 (count (tio/list-dirs "test/resources/test")))))
   (testing "list dirs from existant with trailing slash + subfolders"
     (tio/with-tempdir [dirname]
       (let [files (->> ["i"
@@ -340,9 +341,9 @@
 
 (deftest exists?-test
   (testing "exists? with existant dir"
-    (is (tio/exists? "test-resources/")))
+    (is (tio/exists? "test/resources/")))
   (testing "exists? with existant file"
-    (is (tio/exists? "test-resources/test.txt")))
+    (is (tio/exists? "test/resources/test.txt")))
   (testing "exists? with an inexistant file"
     (is (not (tio/exists? "-i do no exists-")))))
 

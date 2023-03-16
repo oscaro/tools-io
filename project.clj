@@ -28,6 +28,6 @@
   :plugins [[lein-shell "0.5.0"]]
   :profiles {:dev {:global-vars {*warn-on-reflection* true}
                    :source-paths ["dev"]
-                   :resource-paths ["test-resources"]
-                   :dependencies [[org.clojure/tools.namespace "1.3.0"]]}}
+                   :resource-paths ["test/resources"]
+                   :dependencies [[org.clojure/tools.namespace "1.4.4"]]}}
   :repl-options {:init-ns user})
