@@ -1,3 +1,1 @@
-{:linters
- {:unsorted-required-namespaces {:level :warning}
-  :unresolved-symbol {:exclude [(tools.io/with-tempdir) (tools.io/with-tempfile)]}}}
+{:config-paths ["../resources/clj-kondo.exports/com.oscaro/tools.io"]}
