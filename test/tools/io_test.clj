@@ -329,3 +329,36 @@
     (with-in-str "{:answer 42}"
      (is (= 42 (:answer (sut/load-config-file *in* edn/read-string)))
          "load from stdin (protocol independant)"))))
+
+(defn- zip-contents
+  [path]
+  (with-open [z (ZipFile. (io/file path))]
+    (for [^ZipArchiveEntry entry (enumeration-seq (.getEntries z))]
+      (.getName entry))))
+
+(deftest zip-directory-test
+  (testing "zip correctly created"
+    (sut/with-tempdir [tmp-dir]
+      (let [archive (sut/join-path tmp-dir "test.zip")]
+        (is (true?
+             (sut/zip-directory (io/resource "zip-mock")
+                                {:output-file archive
+                                 :absolute? true})))
+        (let [contents (->> (zip-contents archive)
+                            (map sut/basename)
+                            set)]
+          (is (= #{"a.edn" "b.edn" "c.edn"}
+                 contents)))))))
+
+(deftest unzip-file-test
+  (sut/with-tempdir [tmp-dir]
+    (let [output (sut/join-path tmp-dir "extracted")]
+      (is (true? (sut/unzip-file "test/resources/zip-mock.zip"
+                                 {:output-folder output})))
+      (let [files (sut/list-files output)
+            basenames (->> files
+                           (map sut/basename)
+                           set)]
+        (is (= #{"a.edn" "b.edn" "c.edn"}
+               basenames))
+        (is (every? #(= "{:hey true}\n" (slurp %)) files))))))
