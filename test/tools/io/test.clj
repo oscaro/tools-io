@@ -236,7 +236,7 @@
     (is (= 5 (count (tio/list-files "test-resources/test")))))
   (testing "list files from an existant file"
     (is (= "test-resources/test.txt"
-            (first (tio/list-files "test-resources/test.txt")))))
+           (first (tio/list-files "test-resources/test.txt")))))
   (testing "list files from an inexistant dir"
     (is (empty? (tio/list-files "-i do no exists-"))))
 
@@ -269,16 +269,16 @@
           ;; don't match directories
           (are [prefix] (= [(format "%s/aa" dirname)]
                            (sort (tio/list-files (tio/join-path dirname prefix))))
-               "a"
-               "aa"))
+            "a"
+            "aa"))
 
         (testing "trailing slash dir"
-          (= [(format "%s/aaa/x" dirname)]
-             (vec (tio/list-files (tio/join-path dirname "aaa/")))))
+          (is (= [(format "%s/aaa/x" dirname)]
+                 (vec (tio/list-files (tio/join-path dirname "aaa/"))))))
 
         (testing "trailing slash no dir"
-          (empty? (tio/list-files (tio/join-path dirname "foo/")))
-          (empty? (tio/list-files (tio/join-path dirname "aaa/x/"))))))))
+          (is (empty? (tio/list-files (tio/join-path dirname "foo/"))))
+          (is (empty? (tio/list-files (tio/join-path dirname "aaa/y/")))))))))
 
 (deftest list-dirs-test
   (testing "list dirs from existant dir"
