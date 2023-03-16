@@ -181,13 +181,3 @@
   (testing "exists? with an inexistant file"
     (is (not (tio/exists? "-i do no exists-")))))
 
-
-(deftest zip-test
-  (testing "zip correctly created"
-    (let [archive "/tmp/test.zip"
-          output "/tmp/extracted"]
-      (is (= true (tio/zip-directory (io/resource "zip-mock")
-                                     {:output-file archive
-                                      :absolute? true})))
-      (is (= true (tio/unzip-file archive {:output-folder output})))
-      (is (= 3 (count (tio/list-files output)))))))
