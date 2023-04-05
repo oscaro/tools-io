@@ -1,10 +1,11 @@
 (ns tools.io.core
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str])
-  (:import [java.io File Closeable Reader Writer]
-           [java.util.zip GZIPInputStream GZIPOutputStream ZipOutputStream
-            ZipEntry]
-           [org.apache.commons.compress.archivers.zip ZipFile ZipArchiveEntry])
+  (:require
+   [clojure.java.io :as io]
+   [clojure.string :as str])
+  (:import
+   [java.io File Closeable Reader Writer]
+   [java.util.zip GZIPInputStream GZIPOutputStream ZipOutputStream ZipEntry]
+   [org.apache.commons.compress.archivers.zip ZipFile ZipArchiveEntry])
   (:gen-class))
 
 (defonce file-preds (atom {}))
