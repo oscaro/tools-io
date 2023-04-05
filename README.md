@@ -277,7 +277,7 @@ Test if a file exists.
 
 ## License
 
-Copyright © 2016-2021 Oscaro.com
+Copyright © 2016-2023 Oscaro.com
 
 Distributed under the Eclipse Public License either version 1.0 or (at your
 option) any later version.
