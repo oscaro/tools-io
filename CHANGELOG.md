@@ -1,5 +1,10 @@
 # tools.io Changelog
 
+## 0.3.30 (2023/04/07)
+* updated / fixed tests.
+* bump charred 1.028, commons-compress 1.23.0
+* added exported clj-kondo with hooks for with-tempdir/with-tempfile.
+
 ## 0.3.29 (2023/01/24)
 * zip/unzip support.
 * bump charred 1.019, commons-compress 1.22.
