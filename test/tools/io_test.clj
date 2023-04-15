@@ -230,7 +230,7 @@
 (deftest write-edn-file-test
   (let [data [[1 2 3 4 "abc" 434.23]
               [10 20 30 40 "edf" 1432.23123]]
-        expected "[[[1 2 3 4 \"abc\" 434.23] [10 20 30 40 \"edf\" 1432.23123]]]\n"]
+        expected "[[1 2 3 4 \"abc\" 434.23] [10 20 30 40 \"edf\" 1432.23123]]\n"]
 
     (sut/with-tempdir [tmp-dir]
       (testing "nominal case"
