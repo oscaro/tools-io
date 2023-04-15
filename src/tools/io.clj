@@ -265,7 +265,7 @@
 (defn write-edn-file
   "Write an element serialized as EDN in a [protocol://]edn[.gz] file.
    This is equivalent to call write-edns-file on a one-element sequence."
-  ([filename x] (write-edn-file filename {} [x]))
+  ([filename x] (write-edn-file filename {} x))
   ([filename options x] (write-edns-file filename options [x])))
 
 (defn ^{:added "0.3.16"
