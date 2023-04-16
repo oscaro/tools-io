@@ -1,5 +1,8 @@
 # tools.io Changelog
 
+## 0.3.31 (2023/04/16)
+* fix write-edn-file regression.
+
 ## 0.3.30 (2023/04/07)
 * updated / fixed tests.
 * bump charred 1.028, commons-compress 1.23.0
