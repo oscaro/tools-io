@@ -9,11 +9,10 @@
    [clojure.string :as str]
    [tools.io.core :as core])
   (:import
-   [java.io BufferedReader BufferedWriter File]
-   [java.net URL]
-   [java.nio.file Path Files]
-   [java.nio.file.attribute FileAttribute]))
-
+   (java.io BufferedReader BufferedWriter File)
+   (java.net URL)
+   (java.nio.file Files Path)
+   (java.nio.file.attribute FileAttribute)))
 
 ;todo: use https://github.com/pjstadig/reducible-stream/
 
@@ -79,7 +78,7 @@
      (join-protocol prefix path))))
 
 (defn basename
-  "Return the basename of a file path
+  "Return the basename of a file path.
 
    (basename \"/foo/bar.gz\") ; => \"bar.gz\"
    (basename \"http://www.foo.com/qux/\") ; => \"qux\""
@@ -111,10 +110,10 @@
     {:added "0.3.16"}
     [path]
     (cond
-    (= path "~") homedir
-    (str/starts-with? path "~/") (join-path homedir (subs path 2 (count path)))
-    :else path)))
-
+      (= path "~") homedir
+      (str/starts-with? path "~/") (join-path homedir
+                                              (subs path 2 (count path)))
+      :else path)))
 
 (defn- lazy-lines-read
   [{:keys [^BufferedReader stream] :as file}]
@@ -124,9 +123,9 @@
       (do (core/close! file) nil))))
 
 (defn line-write
-  "Write one line in a file created with tools.io.core/file-writer. It is the
-   caller's responsibility to close the file using tools.io.core/close! when
-   it’s done."
+  "Write one line in a file created with tools.io.core/file-writer.
+   It is the caller's responsibility to close the file using
+   tools.io.core/close! when it’s done."
   {:added "0.3.16"}
   [{:keys [^BufferedWriter stream] :as _file} line]
   (.write stream ^String line)
@@ -135,7 +134,7 @@
   nil)
 
 (defn lines-write
-  "Write lines in a file created with tools.io.core/file-writer and close it"
+  "Write lines in a file created with tools.io.core/file-writer and close it."
   {:added "0.3.16"}
   [file lines]
   (try
@@ -151,11 +150,10 @@
        :arglists '([path & [options]])}
   list-dirs tools.io.core/list-dirs)
 
-
 (def ^{:doc "Alias of tools.io.core/zip-directory."
        :added "0.3.29"
        :arglists '([folder & [options]])}
-   zip-directory  tools.io.core/zip-directory)
+  zip-directory tools.io.core/zip-directory)
 
 (def ^{:doc "Alias of tools.io.core/unzip-file."
        :added "0.3.29"
@@ -181,9 +179,9 @@
                                                  filename (inc idx) line (.getMessage e)))))))))))))
 
 (defn read-string-files-fn
-  "Builder for a files-reader function. This is equivalent to
-   read-string-format-file-fn but the returned function expects a sequence of
-   filenames instead of just one."
+  "Builder for a files-reader function.
+   This is equivalent to read-string-format-file-fn but the returned function
+   expects a sequence of filenames instead of just one."
   [read-file-fn]
   (fn read-string-files
     ([filenames] (read-string-files filenames {}))
@@ -194,8 +192,8 @@
                   (read-string-files (next filenames) options)))))))
 
 (defn write-string-file-fn
-  "Builder for a file-writer function. This is the opposite of
-   read-string-format-file-fn."
+  "Builder for a file-writer function.
+   This is the opposite of read-string-format-file-fn."
   [serialize-fn]
   (fn write-string-file
     ([filename xs] (write-string-file filename {} xs))
@@ -205,61 +203,60 @@
             (map-indexed (fn [idx x]
                            (try
                              (serialize-fn x)
-                           (catch Exception e
-                             (core/close! file)
-                             (throw (Exception. (format "error serializing %s in file %s line %d\n%s"
-                                                        (prn-str x) filename (inc idx) (.getMessage e))))))))
-           (lines-write file))))))
+                             (catch Exception e
+                               (core/close! file)
+                               (throw (Exception. (format "error serializing %s in file %s line %d\n%s"
+                                                          (prn-str x) filename (inc idx) (.getMessage e))))))))
+            (lines-write file))))))
 
 (defn slurp
-  "Equivalent of clojure.core/slurp"
+  "Equivalent of clojure.core/slurp."
   {:added "0.3.16"}
   [filename & opts]
   (apply core-slurp (:stream (core/file-reader filename)) opts))
 
 (defn spit
-  "Equivalent of clojure.core/spit"
+  "Equivalent of clojure.core/spit."
   {:added "0.3.16"}
   [filename content & opts]
   (apply core-spit (:stream (core/file-writer filename)) content opts))
 
-
 (def ^{:added "0.3.16"
        :doc
-"return a lazy seq of string from a [protocol://]text[.gz] file.
- warning: the seq must be entirely consumed before the file is closed."}
+       "Return a lazy seq of string from a [protocol://]text[.gz] file.
+  warning: the seq must be entirely consumed before the file is closed."}
   read-text-file
   (read-string-format-file-fn identity))
 
 (def ^{:added "0.3.16"
        :doc
-"write a seq of strings in a [protocol://]text[.gz] file."}
+       "Write a seq of strings in a [protocol://]text[.gz] file."}
   write-text-file
   (write-string-file-fn identity))
 
 (def ^{:added "0.3.16"
        :doc
-"return a lazy seq of parsed json objects from a [protocol://]jsons[.gz] file.
- warning: the seq must be entirely consumed before the file is closed."}
+       "Return a lazy seq of parsed json objects from a [protocol://]jsons[.gz] file.
+  warning: the seq must be entirely consumed before the file is closed."}
   read-jsons-file
   (read-string-format-file-fn #(charred/read-json % {:key-fn keyword})))
 
 (def ^{:added "0.3.16"
        :doc
-"write a seq of elements serialized as JSON in a [protocol://]jsons[.gz] file."}
+       "Write a seq of elements serialized as JSON in a [protocol://]jsons[.gz] file."}
   write-jsons-file
   (write-string-file-fn #(charred/write-json-str % :indent-str nil :escape-slash false)))
 
 (def ^{:added "0.3.16"
        :doc
-"return a lazy seq of parsed edn objects from a [protocol://]edn[.gz] file.
- warning: the seq must be entirely consumed before the file is closed."}
+       "Return a lazy seq of parsed edn objects from a [protocol://]edn[.gz] file.
+  warning: the seq must be entirely consumed before the file is closed."}
   read-edns-file
   (read-string-format-file-fn edn/read-string))
 
 (def ^{:added "0.3.16"
        :doc
-"write a seq of elements serialized as EDN in a [protocol://]edn[.gz] file."}
+       "Write a seq of elements serialized as EDN in a [protocol://]edn[.gz] file."}
   write-edns-file
   (write-string-file-fn prn-str))
 
@@ -271,13 +268,12 @@
 
 (defn ^{:added "0.3.16"
         :doc
-"return a lazy seq of parsed csv row as vector from a [protocol://]csv[.gz] file.
- see http://clojure.github.io/data.csv/ for options
- warning: the seq must be entirely consumed before the file is closed.
+        "Return a lazy seq of parsed csv row as vector from a [protocol://]csv[.gz] file.
+  see http://clojure.github.io/data.csv/ for options
+  warning: the seq must be entirely consumed before the file is closed.
 
- sample usage:
- (read-csv-file \"infos_tarifs.csv\" {:encoding \"ISO-8859-1\"} :separator \\;)
- "}
+  sample usage:
+  (read-csv-file \"infos_tarifs.csv\" {:encoding \"ISO-8859-1\"} :separator \\;)"}
   read-csv-file
   ([in]
    (read-csv-file in nil))
@@ -295,19 +291,18 @@
 
 (defn ^{:added "0.3.16"
         :doc
-"write a seq of vectors serialized as CSV in a [protocol://]csv[.gz] file.
- see http://clojure.github.io/data.csv/ for options.
+        "Write a seq of vectors serialized as CSV in a [protocol://]csv[.gz] file.
+  see http://clojure.github.io/data.csv/ for options.
 
- (write-csv-file out my-lines)
- (write-csv-file out [stream-options-map] my-lines [csv options...])
+  (write-csv-file out my-lines)
+  (write-csv-file out [stream-options-map] my-lines [csv options...])
 
- Examples:
-  (write-csv-file \"animals.csv\" [[\"name\" \"color\"] [\"cat\" \"black\"] [\"dog\" \"brown\"]])
-  (write-csv-file \"animals.csv\" [[\"name\" \"color\"] [\"cat\" \"black\"] [\"dog\" \"brown\"]] :separator \\;)
+  Examples:
+   (write-csv-file \"animals.csv\" [[\"name\" \"color\"] [\"cat\" \"black\"] [\"dog\" \"brown\"]])
+   (write-csv-file \"animals.csv\" [[\"name\" \"color\"] [\"cat\" \"black\"] [\"dog\" \"brown\"]] :separator \\;)
 
-  (write-csv-file \"people.csv\" {:encoding \"ISO-88591\"} my-people)
-  (write-csv-file \"people.csv\" {:encoding \"ISO-88591\"} my-people :separator \\;)
-"}
+   (write-csv-file \"people.csv\" {:encoding \"ISO-88591\"} my-people)
+   (write-csv-file \"people.csv\" {:encoding \"ISO-88591\"} my-people :separator \\;)"}
   write-csv-file
   [out stream-args & csv-args]
   (if (map? stream-args)
@@ -318,15 +313,15 @@
 
 (def ^{:added "0.3.16"
        :doc
-"return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
- warning: the seq must be entirely consumed before every files are closed."}
+       "Return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
+  warning: the seq must be entirely consumed before every files are closed."}
   read-jsons-files
   (read-string-files-fn read-jsons-file))
 
 (def ^{:added "0.3.16"
        :doc
-"return a lazy seq of parsed edn objects from [protocol://]edns[.gz] files.
- warning: the seq must be entirely consumed before every files are closed."}
+       "Return a lazy seq of parsed edn objects from [protocol://]edns[.gz] files.
+  warning: the seq must be entirely consumed before every files are closed."}
   read-edns-files
   (read-string-files-fn read-edns-file))
 
@@ -341,15 +336,16 @@
                            :yml :yaml})
 
 (defn as-file!
-  "coerce argument to an io/file.
-   argument could be a string, an io/file or an io/resource"
+  "Coerce argument to an io/file.
+   Argument could be a string, an io/file or an io/resource"
   [f]
   (cond
     (instance? URL f) (io/input-stream f)
     (instance? File f) f
     :else (let [r (io/resource (str f))]
-            (if (nil? r) (io/file (str f))
-                         (io/input-stream r)))))
+            (if (nil? r)
+              (io/file (str f))
+              (io/input-stream r)))))
 
 (defn ->file-path
   [filename]
@@ -361,9 +357,9 @@
 (defn- fail-as-nil [f] (try (f) (catch Exception _ nil)))
 
 (defn load-config-file
-  "read and parse a configuration file
+  "Read and parse a configuration file.
    edn, clj, json, js, yaml, yml supported
-   protocols supported are those of `tools.io.core/file-reader`"
+   Protocols supported are those of `tools.io.core/file-reader`"
   {:added "0.3.16"}
   ([filename]
    (when (some? filename)
@@ -373,19 +369,20 @@
        (load-config-file filename parse-fn))))
   ([filename parser]
    {:pre [parser]}
-    (let [path     (->file-path filename)
-          raw      (or (fail-as-nil #(slurp filename))
-                       (fail-as-nil #(-> filename as-file! slurp))) ]
-      (when raw
-        (try
-          (parser raw)
-          (catch Exception e
-            (throw (Exception. (str "error parsing config file " path ".\n" (.getMessage e))))))))))
+   (let [path     (->file-path filename)
+         raw      (or (fail-as-nil #(slurp filename))
+                      (fail-as-nil #(-> filename as-file! slurp)))]
+     (when raw
+       (try
+         (parser raw)
+         (catch Exception e
+           (throw (Exception. (str "error parsing config file " path ".\n" (.getMessage e))))))))))
 
 
 (letfn [(close-all [files] (doseq [f files] (core/close! f)))]
   (defn copy
-    "Copy content of file to another file. The only key for copy-opts is :buffer-size that precises the buffer size
+    "Copy content of file to another file.
+    The only key for copy-opts is :buffer-size that precises the buffer size
     used between reader and writer.
     This function may not be the optimal way to copy a file."
     {:added "0.3.16"}
@@ -405,12 +402,11 @@
                                             e)))
          (finally (close-all files)))))))
 
-
 (defprotocol RmRfProtocol
   (^{:added "0.3.16"}
-   rm-rf
+    rm-rf
     [path]
-    "Recursively remove a directory"))
+    "Recursively remove a directory."))
 
 (extend-protocol RmRfProtocol
   String (rm-rf [path] (rm-rf (File. path)))
@@ -432,7 +428,7 @@
         (.delete ^File temp)))))
 
 (defmacro with-tempfile
-  "Executes the body with a temporary file whose name is bind to [x]:
+  "Executes the body with a temporary file whose name is bind to [x].
 
     (with-tempfile [filename]
        (println \"There's a file called\" filename \".\"))
@@ -441,20 +437,19 @@
   [[x] & body]
   `(with-tempfile-impl (fn ~[x] ~@body)))
 
-
 (defn with-tempdir-impl
   {:added "0.3.16"}
   [f]
   (let [path (Files/createTempDirectory "tools-common" (make-array FileAttribute 0))
         temp (.toFile path)]
     (try
-         (.deleteOnExit temp) ; note it won't work if there are files in it
-         (f (str path))
-         (finally
-           (rm-rf temp)))))
+      (.deleteOnExit temp) ; note it won't work if there are files in it
+      (f (str path))
+      (finally
+        (rm-rf temp)))))
 
 (defmacro with-tempdir
-  "Executes the body with a temporary directory whose name is bind to [x]:
+  "Executes the body with a temporary directory whose name is bind to [x].
 
     (with-tempdir [dirname]
        (println \"There's a directory called\" dirname \".\"))
@@ -464,7 +459,7 @@
   `(with-tempdir-impl (fn ~[x] ~@body)))
 
 (defn exists?
-  "Return true if a file exists
+  "Return true if a file exists.
 
    (exists? \"--i-dont-exists--\") ; => false
    (exists? \"https://www.oscaro.com/\") ; => true"
