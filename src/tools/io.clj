@@ -95,7 +95,8 @@
   [path]
   (let [[prefix path] (split-protocol path)
         parent-path (.getParent ^File (io/file path))]
-    (join-protocol prefix parent-path)))
+    (when parent-path
+      (join-protocol prefix parent-path))))
 
 (defn splitext
   "Split a file path in a pair of (file-path-without-extension, extension)."

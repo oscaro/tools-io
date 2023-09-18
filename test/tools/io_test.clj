@@ -48,13 +48,21 @@
   (are [expected path] (= expected (sut/parent path))
        nil ""
        nil "/"
+       nil "foo"
+       nil "foo/"
        "/" "/foo"
        "/" "/foo/"
        "/foo" "/foo/bar"
+       "/foo" "/foo/bar/"
        "foo" "foo/bar"
+       "foo" "foo/bar/"
        "/a/b/c/d" "/a/b/c/d/foo.edns"
-       "gs://foo/bar" "gs://foo/bar/qux"
-       "gs://foo/bar" "gs://foo/bar/qux/"))
+       nil "gs://"
+       nil "gs://foo"
+       nil "gs://foo/"
+       "gs://foo" "gs://foo/bar"
+       "gs://foo" "gs://foo/bar/"
+       "gs://foo/bar" "gs://foo/bar/baz.edns"))
 
 (deftest splitext-test
   (are [expected fullpath] (= expected (sut/splitext fullpath))
