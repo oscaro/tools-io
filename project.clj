@@ -4,9 +4,9 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure                 "1.11.1"]
-                 [clj-commons/clj-yaml                "1.0.26"]
-                 [com.cnuernber/charred               "1.028"]
-                 [org.apache.commons/commons-compress "1.23.0"]]
+                 [clj-commons/clj-yaml                "1.0.27"]
+                 [com.cnuernber/charred               "1.032"]
+                 [org.apache.commons/commons-compress "1.24.0"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
