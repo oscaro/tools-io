@@ -1,5 +1,9 @@
 # tools.io Changelog
 
+## 03.32 (2023/09/21)
+* fix parent of URI-like path.
+* bump charred 1.032, commons-compress 1.24.0, clj-yaml 1.0.27
+
 ## 0.3.31 (2023/04/16)
 * fix write-edn-file regression.
 
