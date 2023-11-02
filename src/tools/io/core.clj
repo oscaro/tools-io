@@ -256,7 +256,7 @@
 ;; File size probe
 
 (defmethod sizeof :base
-  [target & {:keys []}]
+  [target & opts]
   (letfn [(size [^File p]
             (if (.isDirectory p)
               (apply + (pmap size (.listFiles p)))

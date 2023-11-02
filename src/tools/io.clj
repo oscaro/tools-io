@@ -471,5 +471,5 @@
 (defn sizeof
   "Return the size of file or folder"
   {:added "0.3.33"}
-  [target & opts]
+  [target & [opts]]
   (core/sizeof target opts))
