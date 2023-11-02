@@ -1,6 +1,9 @@
 # tools.io Changelog
 
-## 03.32 (2023/09/21)
+## 0.3.33 (2023/11/02)
+* Add `sizeof` function
+
+## 0.3.32 (2023/09/21)
 * fix parent of URI-like path.
 * bump charred 1.032, commons-compress 1.24.0, clj-yaml 1.0.27
 

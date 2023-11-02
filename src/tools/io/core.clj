@@ -133,6 +133,11 @@
    directory. If not a Zip file, yield `nil`"
   get-file-type)
 
+(defmulti sizeof
+  "Probe the size of the target files/folder without
+   loading dataset in memory"
+  get-file-type)
+
 ;;Shamefully copied from clojure.java.io/do-copy because we hardly can reuse the do-copy multi-fn
 (defn copy
   [^Reader input ^Writer output opts]
@@ -247,6 +252,18 @@
                 (io/copy zs entry-o-s))))
           true))
       (catch Exception _ false))))
+
+;; File size probe
+
+(defmethod sizeof :base
+  [target & {:keys []}]
+  (letfn [(size [^File p]
+            (if (.isDirectory p)
+              (apply + (pmap size (.listFiles p)))
+              (.length p)))]
+    (when-let [target (io/file target)]
+      (when (.exists target)
+        (size target)))))
 
 ;; HTTP & HTTPS
 ;; ------------

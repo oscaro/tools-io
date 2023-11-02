@@ -180,4 +180,3 @@
     (is (tio/exists? "test/resources/test.txt")))
   (testing "exists? with an inexistant file"
     (is (not (tio/exists? "-i do no exists-")))))
-

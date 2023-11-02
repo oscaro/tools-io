@@ -370,3 +370,11 @@
         (is (= #{"a.edn" "b.edn" "c.edn"}
                basenames))
         (is (every? #(= "{:hey true}\n" (slurp %)) files))))))
+
+(deftest sizeof-test
+  (testing "size probe"
+    (is (= 12 (sut/sizeof (io/resource "test.edn"))))
+    (is (= 18 (sut/sizeof (io/resource "test.json"))))
+    (is (= 5232 (sut/sizeof (io/resource "sizeof/"))))
+    (is (= nil (sut/sizeof "/fictional")))
+    (is (= nil  (sut/sizeof (io/resource "bad.eeeeb____broken__json"))))))
