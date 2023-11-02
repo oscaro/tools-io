@@ -466,3 +466,10 @@
   {:added "0.3.17"}
   [filename & [options]]
   (core/exists? filename options))
+
+
+(defn sizeof
+  "Return the size of file or folder"
+  {:added "0.3.33"}
+  [target & opts]
+  (core/sizeof target opts))
