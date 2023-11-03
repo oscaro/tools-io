@@ -239,7 +239,7 @@
        "Return a lazy seq of parsed json objects from a [protocol://]jsons[.gz] file.
   warning: the seq must be entirely consumed before the file is closed."}
   read-jsons-file
-  (read-string-format-file-fn #(charred/read-json % {:key-fn keyword})))
+  (read-string-format-file-fn #(charred/read-json % :key-fn keyword)))
 
 (def ^{:added "0.3.16"
        :doc
