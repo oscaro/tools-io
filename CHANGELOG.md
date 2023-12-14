@@ -1,6 +1,19 @@
 # tools.io Changelog
 
+## Unreleased
+### Changed
+* bump charred 1.033, commons-compress 1.25.0.
+
+## 0.3.35 (2023/11/02)
+### Fixed
+* read-jsons-file parameters to charred.
+
+## 0.3.34 (2023/11/02)
+### Changed
+* Avoid deconstruction on sizeof default config.
+
 ## 0.3.33 (2023/11/02)
+### Added
 * Add `sizeof` function
 
 ## 0.3.32 (2023/09/21)
