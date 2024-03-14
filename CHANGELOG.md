@@ -1,7 +1,8 @@
 # tools.io Changelog
 
-## Unreleased
+## 0.3.37 (2024-03-14)
 ### Changed
+* bump clojure 1.11.2, charred 1.034, commons-compress 1.26.1.
 
 ## 0.3.36 (2023-12-14)
 ### Changed
