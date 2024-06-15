@@ -3,10 +3,10 @@
   :url "https://github.com/oscaro/tools-io"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure                 "1.11.2"]
+  :dependencies [[org.clojure/clojure                 "1.11.3"]
                  [clj-commons/clj-yaml                "1.0.27"]
                  [com.cnuernber/charred               "1.034"]
-                 [org.apache.commons/commons-compress "1.26.1"]]
+                 [org.apache.commons/commons-compress "1.26.2"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
