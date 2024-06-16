@@ -11,10 +11,10 @@
 (deftest expand-home-test
   (let [home (System/getProperty "user.home")]
     (are [expected path] (= expected (tio/expand-home path))
-         ""   ""
-         home "~"
-         home home
-         (str home "/foo/bar") "~/foo/bar")))
+      ""   ""
+      home "~"
+      home home
+      (str home "/foo/bar") "~/foo/bar")))
 
 (deftest read-txt-test
   (testing "reading resource test.txt file"
@@ -33,17 +33,17 @@
 
 (deftest get-default-file-types-test
   (are [ftype filename] (= ftype (sut/get-file-type filename))
-       :base "file://foo"
-       :base "/foo"
-       :base "../foo"
-       :base "bar"
-       :base "file://toto"
-       :base "file:///toto"
+    :base "file://foo"
+    :base "/foo"
+    :base "../foo"
+    :base "bar"
+    :base "file://toto"
+    :base "file:///toto"
 
-       :http "http://www.google.com"
-       :http "https://www.google.com"
+    :http "http://www.google.com"
+    :http "https://www.google.com"
 
-       :stdin *in*))
+    :stdin *in*))
 
 (deftest custom-file-type-test
   (let [file-type :test1234
@@ -51,24 +51,24 @@
     (is (thrown? Exception (sut/get-file-type filename)))
 
     (try
-       (sut/register-file-pred!
-         file-type #(str/starts-with? (str %) "test1234://"))
+      (sut/register-file-pred!
+       file-type #(str/starts-with? (str %) "test1234://"))
 
-       (is (= file-type (sut/get-file-type filename)))
+      (is (= file-type (sut/get-file-type filename)))
 
-       (finally
-          (sut/unregister-file-pred! file-type)))))
+      (finally
+        (sut/unregister-file-pred! file-type)))))
 
 (deftest mk-file-protocol-checker-test
   (let [checker (#'sut/mk-file-protocol-checker #{"foo" "bar"})]
     (are [ok-path] (checker ok-path)
-                   "foo://something"
-                   "bar://something"
-                   "FOO://something")
+      "foo://something"
+      "bar://something"
+      "FOO://something")
     (are [not-ok-path] (not (checker not-ok-path))
-                       "http://something"
-                       "/home/linus/SECRET"
-                       "hello")))
+      "http://something"
+      "/home/linus/SECRET"
+      "hello")))
 
 (deftest read-from-stdin-test
   (with-in-str "{\"toto\": 42}"
@@ -78,9 +78,8 @@
   (testing "long line"
     (let [obj (vec (range 9000))
           s (charred/write-json-str obj)]
-    (with-in-str s
-      (is (= [obj]
-             (tio/read-jsons-file *in*)))))))
+      (with-in-str s
+        (is (= [obj] (tio/read-jsons-file *in*)))))))
 
 (deftest copy-test
   (testing "copy from filesystem to filesystem"
@@ -93,7 +92,6 @@
                   (.getPath to) {:encoding "utf-8"})
         (is (= "écho" (slurp to :encoding "utf-8")))
         (finally (.delete from) (.delete to))))))
-
 
 (deftest list-files-test
   (testing "list files from an existant dir"

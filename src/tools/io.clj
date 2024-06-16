@@ -48,13 +48,13 @@
   [path]
   {:pre [(string? path)]}
   (let [[prefix x] (str/split path #"://" 2)]
-     (if x
-       [prefix x]
-       [nil prefix])))
+    (if x
+      [prefix x]
+      [nil prefix])))
 
 (defn- join-protocol
   [protocol path]
-  (if (not-empty protocol)
+  (if (seq protocol)
     (str protocol "://" path)
     path))
 
@@ -118,9 +118,9 @@
 (defn- lazy-lines-read
   [{:keys [^BufferedReader stream] :as file}]
   (lazy-seq
-    (if-let [line (.readLine stream)]
-      (cons line (lazy-lines-read file))
-      (do (core/close! file) nil))))
+   (if-let [line (.readLine stream)]
+     (cons line (lazy-lines-read file))
+     (do (core/close! file) nil))))
 
 (defn line-write
   "Write one line in a file created with tools.io.core/file-writer.
@@ -166,17 +166,21 @@
   (fn read-string-format-file
     ([filename] (read-string-format-file filename {}))
     ([filename options]
-      (let [file (core/file-reader filename options)]
-        (->> (lazy-lines-read file)
-             (remove str/blank?)
-             (map-indexed
-                (fn apply-read-fn [idx line]
-                  (try
-                    (read-fn (if (= idx 0) (strip-bom line) line))
-                    (catch Exception e
-                      (core/close! file)
-                      (throw (Exception. (format "error parsing file %s at line %d\nline=[%s]\n%s"
-                                                 filename (inc idx) line (.getMessage e)))))))))))))
+     (let [file (core/file-reader filename options)]
+       (->> (lazy-lines-read file)
+            (remove str/blank?)
+            (map-indexed
+             (fn apply-read-fn [idx line]
+               (try
+                 (read-fn (if (= idx 0) (strip-bom line) line))
+                 (catch Exception e
+                   (core/close! file)
+                   (throw (->> [(format "Error parsing file %s at line %d"
+                                        filename (inc idx))
+                                (format "line=[%s]" line)
+                                (.getMessage e)]
+                               (str/join "\n")
+                               (Exception.))))))))))))
 
 (defn read-string-files-fn
   "Builder for a files-reader function.
@@ -186,10 +190,10 @@
   (fn read-string-files
     ([filenames] (read-string-files filenames {}))
     ([filenames options]
-      (lazy-seq
-        (when (seq filenames)
-          (concat (read-file-fn (first filenames) options)
-                  (read-string-files (next filenames) options)))))))
+     (lazy-seq
+      (when (seq filenames)
+        (concat (read-file-fn (first filenames) options)
+                (read-string-files (next filenames) options)))))))
 
 (defn write-string-file-fn
   "Builder for a file-writer function.
@@ -200,13 +204,15 @@
     ([filename options xs]
      (let [file (core/file-writer filename options)]
        (->> xs
-            (map-indexed (fn [idx x]
-                           (try
-                             (serialize-fn x)
-                             (catch Exception e
-                               (core/close! file)
-                               (throw (Exception. (format "error serializing %s in file %s line %d\n%s"
-                                                          (prn-str x) filename (inc idx) (.getMessage e))))))))
+            (map-indexed
+             (fn [idx x]
+               (try
+                 (serialize-fn x)
+                 (catch Exception e
+                   (core/close! file)
+                   (throw (Exception.
+                           (format "Error serializing %s in file %s line %d\n%s"
+                                   (prn-str x) filename (inc idx) (.getMessage e))))))))
             (lines-write file))))))
 
 (defn slurp
@@ -298,8 +304,14 @@
   (write-csv-file out [stream-options-map] my-lines [csv options...])
 
   Examples:
-   (write-csv-file \"animals.csv\" [[\"name\" \"color\"] [\"cat\" \"black\"] [\"dog\" \"brown\"]])
-   (write-csv-file \"animals.csv\" [[\"name\" \"color\"] [\"cat\" \"black\"] [\"dog\" \"brown\"]] :separator \\;)
+   (write-csv-file \"animals.csv\" [[\"name\" \"color\"]
+                                    [\"cat\" \"black\"]
+                                    [\"dog\" \"brown\"]])
+   (write-csv-file \"animals.csv\"
+                   [[\"name\" \"color\"]
+                    [\"cat\" \"black\"]
+                    [\"dog\" \"brown\"]]
+                   :separator \\;)
 
    (write-csv-file \"people.csv\" {:encoding \"ISO-88591\"} my-people)
    (write-csv-file \"people.csv\" {:encoding \"ISO-88591\"} my-people :separator \\;)"}
@@ -376,8 +388,8 @@
        (try
          (parser raw)
          (catch Exception e
-           (throw (Exception. (str "error parsing config file " path ".\n" (.getMessage e))))))))))
-
+           (throw (Exception. (str "Error parsing config file " path ".\n"
+                                   (.getMessage e))))))))))
 
 (letfn [(close-all [files] (doseq [f files] (core/close! f)))]
   (defn copy
@@ -389,7 +401,8 @@
     ([from from-opts to to-opts]
      (copy from from-opts to to-opts nil))
     ([from from-opts to to-opts copy-opts]
-     (let [[reader writer :as files] [(core/file-reader from from-opts) (core/file-writer to to-opts)]]
+     (let [[reader writer :as files] [(core/file-reader from from-opts)
+                                      (core/file-writer to to-opts)]]
        (try
          (core/copy (:stream reader) (:stream writer) copy-opts)
          (catch Exception e (throw (ex-info (format "error copying %s in %s"
@@ -459,7 +472,7 @@
   `(with-tempdir-impl (fn ~[x] ~@body)))
 
 (defn exists?
-  "Return true if a file exists.
+  "Returns true if a file exists.
 
    (exists? \"--i-dont-exists--\") ; => false
    (exists? \"https://www.oscaro.com/\") ; => true"
@@ -467,9 +480,8 @@
   [filename & [options]]
   (core/exists? filename options))
 
-
 (defn sizeof
-  "Return the size of file or folder"
+  "Returns the size of file or folder."
   {:added "0.3.33"}
   [target & [opts]]
   (core/sizeof target opts))

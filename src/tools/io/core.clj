@@ -8,23 +8,24 @@
    [org.apache.commons.compress.archivers.zip ZipFile ZipArchiveEntry])
   (:gen-class))
 
-(defonce file-preds (atom {}))
+(defonce ^:private file-preds (atom {}))
 
 (defn register-file-pred!
-  "Extend the dispatch function of the multimethods with your own
+  "Registers a new file type with a file predicate.
+
+   Extends the dispatch function of the multimethods with your own
    implementation.
 
    Example:
-
      (register-file-pred!
        :my-filetype
-       (fn [filename] (clojure.string/starts-with? (str filename) \"myprotocol://\")))
+       (fn [filename]
+        (clojure.string/starts-with? (str filename) \"myprotocol://\")))
 
      (defmethod mk-input-stream :my-filetype
        [filename & [options]]
        ;; ...
-       {:stream ...}
-       )
+       {:stream ...})
 
    The code above is sufficient to get all reading function for free on your
    custom protocol, given that mk-input-stream works correctly."
@@ -41,7 +42,10 @@
    (or (some (fn [[file-type file-pred]]
                (when (file-pred filename)
                  file-type)) @file-preds)
-       (throw (Exception. (str "unsupported protocol for " filename ". perhaps you forgot to require the proper extension (eg.: tools.io.gs)")))))
+       (throw (Exception.
+               (str "Unsupported protocol for " filename "."
+                    " Perhaps you forgot to require the proper extension"
+                    " (eg.: tools.io.gs)")))))
   ([filename _ & _]
    (get-file-type filename)))
 
@@ -89,14 +93,14 @@
        os))))
 
 (defn file-reader
-  "Return a file reader"
+  "Returns a file reader."
   ([filename] (file-reader filename nil))
   ([filename options]
    (let [file (input-stream filename options)]
      (update file :stream #(io/reader % :encoding (:encoding options "UTF-8"))))))
 
 (defn file-writer
-  "Return a file writer"
+  "Returns a file writer."
   ([filename] (file-writer filename nil))
   ([filename options]
    (let [file (output-stream filename options)]
@@ -113,7 +117,7 @@
   get-file-type)
 
 (defmulti list-dirs
-  "Return a seq of directories with provided path as prefix"
+  "Returns a seq of directories with provided path as prefix."
   get-file-type)
 
 (defmulti delete-file
@@ -121,21 +125,21 @@
   get-file-type)
 
 (defmulti exists?
-  "Returns `true` if filename exists"
+  "Returns `true` if filename exists."
   get-file-type)
 
 (defmulti zip-directory
-  "Create zip from target directory"
+  "Creates zip from target directory."
   get-file-type)
 
 (defmulti unzip-file
-  "Unzip the targeted file to the current
-   directory. If not a Zip file, yield `nil`"
+  "Unzip the targeted file to the current directory.
+   If not a Zip file, yield `nil`."
   get-file-type)
 
 (defmulti sizeof
-  "Probe the size of the target files/folder without
-   loading dataset in memory"
+  "Probe the size of the target files/folder.
+   Should not load dataset in memory."
   get-file-type)
 
 ;;Shamefully copied from clojure.java.io/do-copy because we hardly can reuse the do-copy multi-fn
@@ -205,7 +209,6 @@
   [path & [options]]
   (io/delete-file path (:silently options false)))
 
-
 (defmethod exists? :base
   [filename & [_options]]
   (when filename
@@ -256,7 +259,7 @@
 ;; File size probe
 
 (defmethod sizeof :base
-  [target & opts]
+  [target & _opts]
   (letfn [(size [^File p]
             (if (.isDirectory p)
               (apply + (pmap size (.listFiles p)))
@@ -283,7 +286,6 @@
       (with-open [stream (io/input-stream filename :encoding (:encoding options "UTF-8"))]
         (pos? (.available stream)))
       (catch Exception _ false))))
-
 
 ;; STDIN
 ;; -----

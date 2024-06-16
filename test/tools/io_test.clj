@@ -46,23 +46,23 @@
 
 (deftest parent-test
   (are [expected path] (= expected (sut/parent path))
-       nil ""
-       nil "/"
-       nil "foo"
-       nil "foo/"
-       "/" "/foo"
-       "/" "/foo/"
-       "/foo" "/foo/bar"
-       "/foo" "/foo/bar/"
-       "foo" "foo/bar"
-       "foo" "foo/bar/"
-       "/a/b/c/d" "/a/b/c/d/foo.edns"
-       nil "gs://"
-       nil "gs://foo"
-       nil "gs://foo/"
-       "gs://foo" "gs://foo/bar"
-       "gs://foo" "gs://foo/bar/"
-       "gs://foo/bar" "gs://foo/bar/baz.edns"))
+    nil ""
+    nil "/"
+    nil "foo"
+    nil "foo/"
+    "/" "/foo"
+    "/" "/foo/"
+    "/foo" "/foo/bar"
+    "/foo" "/foo/bar/"
+    "foo" "foo/bar"
+    "foo" "foo/bar/"
+    "/a/b/c/d" "/a/b/c/d/foo.edns"
+    nil "gs://"
+    nil "gs://foo"
+    nil "gs://foo/"
+    "gs://foo" "gs://foo/bar"
+    "gs://foo" "gs://foo/bar/"
+    "gs://foo/bar" "gs://foo/bar/baz.edns"))
 
 (deftest splitext-test
   (are [expected fullpath] (= expected (sut/splitext fullpath))
@@ -228,12 +228,12 @@
                      rslt))))))
 
       (testing "with compression"
-          (let [file-path (sut/join-path tmp-dir "test-comp.edns.gz")]
-            (write-fixture file-path data)
+        (let [file-path (sut/join-path tmp-dir "test-comp.edns.gz")]
+          (write-fixture file-path data)
 
-            (let [rslt (sut/read-edns-file file-path)]
-              (is (= expected
-                     rslt))))))))
+          (let [rslt (sut/read-edns-file file-path)]
+            (is (= expected
+                   rslt))))))))
 
 (deftest write-edn-file-test
   (let [data [[1 2 3 4 "abc" 434.23]
@@ -291,7 +291,6 @@
             (is (= expected
                    rslt))))))))
 
-
 (deftest write-csv-file-test
   (let [data [[1 2 3 4 "abc" 434.23]
               [10 20 30 40 "edf" 1432.23123]]
@@ -335,8 +334,8 @@
         "load absolute filename")
 
     (with-in-str "{:answer 42}"
-     (is (= 42 (:answer (sut/load-config-file *in* edn/read-string)))
-         "load from stdin (protocol independant)"))))
+      (is (= 42 (:answer (sut/load-config-file *in* edn/read-string)))
+          "load from stdin (protocol independant)"))))
 
 (defn- zip-contents
   [path]
