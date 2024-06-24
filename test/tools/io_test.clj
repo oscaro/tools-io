@@ -5,6 +5,7 @@
    [clojure.string :as str]
    [clojure.test :refer [are deftest is testing]]
    [tools.io :as sut]
+   [tools.io.compress :as zio]
    [tools.io.core :refer [file-writer]])
   (:import
    (java.util.zip GZIPInputStream GZIPOutputStream)
@@ -121,15 +122,59 @@
   (testing "list dirs from non existant directory"
     (is (= 0 (count (sut/list-dirs "i'm broken ~~~"))))))
 
+(defmacro ^:private test-spit-text
+  [aformat & [file-ext]]
+  `(sut/with-tempdir [adir#]
+     (let [~'plain (slurp (io/resource "compress/utf8-demo.txt"))
+           ~'afile (sut/join-path adir#
+                                  ~(str "out.txt"
+                                        (when (not= "plain" aformat)
+                                          (str "." (or file-ext aformat)))))]
+       (sut/spit ~'afile ~'plain)
+       (is (= ~'plain (sut/slurp ~'afile)) "read with `tools.io/slurp`")
+
+       ~(if (= "plain" aformat)
+          `(is (= ~'plain (slurp ~'afile)) "read with `clojure.core/slurp`")
+
+          `(with-open [in# (io/input-stream (io/file ~'afile))]
+             (is (= ~aformat (zio/detect? in#)) "is a compressed stream"))))))
+
 (deftest spit-test
-  (let [text "Hey\n\nI \njust\n\n  met \n\tyou\n\n"
-        filename ".spit-slurp-tmp-test-rw-text"]
-    (io/delete-file filename true)
-    (try
-      (sut/spit filename text)
-      (is (= text (slurp filename)))
-      (finally
-        (io/delete-file filename true)))))
+  (testing "it writes plain text file"
+    (test-spit-text "plain"))
+
+  (testing "it writes compressed text file"
+    (test-spit-text "gz")
+    (test-spit-text "bzip2" "bz2")
+    (test-spit-text "lz4-framed" "lz4")))
+
+(deftest ^:extra-compression spit-extra-test
+  (testing "it writes compressed text file (extra algorithms)"
+    (test-spit-text "zstd" "zst")
+    (test-spit-text "xz")))
+
+(defmacro ^:private test-slurp-text
+  [compression]
+  (let [path "compress/utf8-demo.txt"]
+    `(is (= (slurp (io/resource ~path))
+            (sut/slurp (io/resource ~(if (= "plain" compression)
+                                       path
+                                       (str path "." compression)))))
+         ~(format "slurp %s file" compression))))
+
+(deftest slurp-test
+  (testing "it reads plain text file"
+    (test-slurp-text "plain"))
+
+  (testing "it reads compressed text files"
+    (test-slurp-text "gz")
+    (test-slurp-text "bz2")
+    (test-slurp-text "lz4")))
+
+(deftest ^:extra-compression slurp-extra-test
+  (testing "it reads compressed text files (extra algorithms)"
+    (test-slurp-text "zst")
+    (test-slurp-text "xz")))
 
 (defn- write-fixture
   [path data]
@@ -137,11 +182,6 @@
                              (str/ends-with? path ".gz")
                              GZIPOutputStream.))]
     (.write w ^String data)))
-
-(deftest slurp-test
-  (let [test-file "test.txt"]
-    (is (= (slurp (io/resource test-file))
-           (sut/slurp (io/resource test-file))))))
 
 (deftest read-jsons-file-test
   (testing "with resources"

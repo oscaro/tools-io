@@ -6,7 +6,8 @@
    [clojure.test :refer [are deftest is testing]]
    [tools.io :as tio]
    [tools.io.core :as sut])
-  (:import (java.io File)))
+  (:import
+   (java.io Closeable File)))
 
 (deftest expand-home-test
   (let [home (System/getProperty "user.home")]
@@ -178,3 +179,69 @@
     (is (tio/exists? "test/resources/test.txt")))
   (testing "exists? with an inexistant file"
     (is (not (tio/exists? "-i do no exists-")))))
+
+(defmacro ^:private test-input-stream
+  [file-ext]
+  (let [path "compress/utf8-demo.txt"]
+    `(with-open [expected-stream# (io/input-stream (io/resource ~path))
+                 ^Closeable actual-stream# (-> ~(str path
+                                                     (when (not= "plain" file-ext)
+                                                       (str "." file-ext)))
+                                               (io/resource)
+                                               (sut/input-stream)
+                                               :stream)]
+       (is (= (vec (sut/->byte-array expected-stream#))
+              (vec (sut/->byte-array actual-stream#)))
+           ~(format "read %s input-stream" file-ext)))))
+
+(deftest input-stream-test
+  (testing "it deals with plain data"
+    (test-input-stream "plain"))
+  (testing "it deals with compressed data"
+    (test-input-stream "gz")
+    (test-input-stream "bz2")
+    (test-input-stream "lz4")))
+
+(deftest ^:extra-compression input-stream-extra-test
+  (testing "it deals with compressed data (extra algorithms)"
+    (test-input-stream "zst")
+    (test-input-stream "xz")))
+
+(defmacro ^:private test-output-stream
+  [file-ext & [stream-opts]]
+  (let [path "compress/utf8-demo.txt"]
+    `(tio/with-tempdir [adir#]
+       (let [afile# (tio/join-path adir# ~(str "out." file-ext))
+             byte-arr# (with-open [in# (io/input-stream (io/resource ~path))]
+                         (sut/->byte-array in#))]
+
+         (with-open [^Closeable out# (-> afile#
+                                         (sut/output-stream ~stream-opts)
+                                         :stream)]
+           (io/copy byte-arr# out#))
+
+         (with-open [^Closeable in# (-> afile# (sut/input-stream) :stream)]
+           (is (= (vec byte-arr#)
+                  (vec (sut/->byte-array in#)))))))))
+
+(deftest output-stream-test
+  (testing "it uses uncompressed output-stream"
+    (test-output-stream "dat"))
+
+  (testing "it uses compressed output stream"
+    (test-output-stream "gz")
+    (test-output-stream "gz" {:compression-level 1})
+
+    (test-output-stream "bz2")
+    (test-output-stream "bz2" {:block-size 1})
+
+    (test-output-stream "lz4")
+    (test-output-stream "lz4" {:block-size :K64})))
+
+(deftest ^:extra-compression output-stream-extra-test
+  (testing "it uses compressed output stream (extra algorithms)"
+    (test-output-stream "zst")
+    (test-output-stream "zst" {:level 1})
+
+    (test-output-stream "xz")
+    (test-output-stream "xz" {:preset 2})))

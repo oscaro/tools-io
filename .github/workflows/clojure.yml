@@ -10,7 +10,7 @@ jobs:
     - name: Install dependencies
       run: lein -U deps
     - name: Run tests
-      run: lein test
+      run: lein test-all
     - name: Deploy
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/devel'
       run: lein deploy
