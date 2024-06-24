@@ -1,12 +1,12 @@
 (ns tools.io.core
   (:require
    [clojure.java.io :as io]
-   [clojure.string :as str])
+   [clojure.string :as str]
+   [tools.io.compress :as zio])
   (:import
-   [java.io File Closeable Reader Writer]
-   [java.util.zip GZIPInputStream GZIPOutputStream ZipOutputStream ZipEntry]
-   [org.apache.commons.compress.archivers.zip ZipFile ZipArchiveEntry])
-  (:gen-class))
+   (java.io ByteArrayOutputStream Closeable File Reader Writer)
+   (java.util.zip ZipEntry ZipOutputStream)
+   (org.apache.commons.compress.archivers.zip ZipArchiveEntry ZipFile)))
 
 (defonce ^:private file-preds (atom {}))
 
@@ -69,27 +69,28 @@
   "Returns an output stream with any implementation."
   get-file-type)
 
-(defn gzipped?
-  "Tests if a filename ends with .gz or .gzip"
+(defn- file-ext
   [filename]
-  (re-find #"(?i)\.gz(?:ip)?$" (str filename)))
+  (second (re-find #"\.([^./]+)$" (str filename))))
 
 (defn input-stream
-  "Returns an input-stream, with support of gzip compression."
+  "Returns an input-stream for plain or compressed file."
   ([filename] (input-stream filename nil))
   ([filename options]
-   (let [is (mk-input-stream filename options)]
-     (if (gzipped? filename)
-       (update is :stream #(GZIPInputStream. %))
+   (let [is (mk-input-stream filename options)
+         compressor (zio/get-compressor (file-ext filename))]
+     (if compressor
+       (update is :stream #(zio/-get-input-stream compressor % options))
        is))))
 
 (defn output-stream
-  "Returns an output-stream, with support of gzip compression."
+  "Returns an output-stream for plain or compressed file."
   ([filename] (output-stream filename nil))
   ([filename options]
-   (let [os (mk-output-stream filename options)]
-     (if (gzipped? filename)
-       (update os :stream #(GZIPOutputStream. %))
+   (let [os (mk-output-stream filename options)
+         compressor (zio/get-compressor (file-ext filename))]
+     (if compressor
+       (update os :stream #(zio/-get-output-stream compressor % options))
        os))))
 
 (defn file-reader
@@ -151,6 +152,12 @@
         (when (pos? size)
           (.write output buffer 0 size)
           (recur))))))
+
+(defn ^:no-doc ->byte-array
+  [input-stream]
+  (let [bao (ByteArrayOutputStream.)]
+    (io/copy input-stream bao)
+    (.toByteArray bao)))
 
 ;; Default Hooks
 ;; =============

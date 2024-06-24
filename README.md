@@ -27,8 +27,8 @@ Oscaro’s generic I/O tools collection.
     - [spit](#spit)
     - [exists?](#exists)
   - [core](#core)
-    - [gzipped?](#gzipped)
     - [file-reader](#file-reader)
+- [About compression](#about-compression)
 - [clj-kondo](#clj-kondo)
 - [License](#license)
 
@@ -290,20 +290,21 @@ you need to call (close! file) when you done.
 
 **returns**: an map with a `:stream` key
 
-#### `gzipped?`
+## About compression
 
-Test if a filename ends with `.gz` or `.gzip`
+By default, `tools.io` supports _[gzip]_, _[bzip2]_ and _[framed lz4][]_
+compression algorithms and can be extended by implementing a custom protocol
+(see sources).
 
-**arguments**:
-- filename
+It also supports the following formats if you provide the required dependencies.
+- _[xz]_ with `org.tukaani/xz` provided
+- _[zstd]_ with `com.github.luben/zstd-jni` provided
 
-**returns**: a boolean
-
-examples
-```clojure
-(core/gzipped? "toto.gz"); => true
-(core/gzipped? "toto.GZip"); => true
-```
+[gzip]: https://en.wikipedia.org/wiki/Gzip
+[bzip2]: https://en.wikipedia.org/wiki/Bzip2
+[xz]: https://en.wikipedia.org/wiki/XZ_Utils
+[zstd]: https://en.wikipedia.org/wiki/Zstd
+[framed lz4]: https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)
 
 ## clj-kondo
 

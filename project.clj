@@ -29,5 +29,13 @@
   :profiles {:dev {:global-vars {*warn-on-reflection* true}
                    :source-paths ["dev"]
                    :resource-paths ["test/resources"]
-                   :dependencies [[org.clojure/tools.namespace "1.5.0"]]}}
+                   :dependencies [[org.clojure/tools.namespace "1.5.0"]]}
+             :extra-compression
+             {:dependencies [[org.tukaani/xz            "1.9"]
+                             [com.github.luben/zstd-jni "1.5.6-3"]]}}
+  :test-selectors {:default (fn [m] (not (:extra-compression m)))
+                   :extra-compression :extra-compression}
+  :aliases {"repl" ["with-profile" "+extra-compression" "repl"]
+            "test-all" ["with-profile" "+extra-compression" "test" ":all"]}
+  :target-path "target/%s/"
   :repl-options {:init-ns user})

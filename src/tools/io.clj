@@ -229,54 +229,54 @@
 
 (def ^{:added "0.3.16"
        :doc
-       "Return a lazy seq of string from a [protocol://]text[.gz] file.
-  warning: the seq must be entirely consumed before the file is closed."}
+       "Returns a lazy seq of string from a [protocol://]text[.zext] file.
+  Warning: The seq must be entirely consumed before the file is closed."}
   read-text-file
   (read-string-format-file-fn identity))
 
 (def ^{:added "0.3.16"
        :doc
-       "Write a seq of strings in a [protocol://]text[.gz] file."}
+       "Writes a seq of strings in a [protocol://]text[.zext] file."}
   write-text-file
   (write-string-file-fn identity))
 
 (def ^{:added "0.3.16"
        :doc
-       "Return a lazy seq of parsed json objects from a [protocol://]jsons[.gz] file.
-  warning: the seq must be entirely consumed before the file is closed."}
+       "Returns a lazy seq of parsed json objects from a [protocol://]jsons[.zext] file.
+  Warning: The seq must be entirely consumed before the file is closed."}
   read-jsons-file
   (read-string-format-file-fn #(charred/read-json % :key-fn keyword)))
 
 (def ^{:added "0.3.16"
        :doc
-       "Write a seq of elements serialized as JSON in a [protocol://]jsons[.gz] file."}
+       "Writes a seq of elements serialized as JSON in a [protocol://]jsons[.zext] file."}
   write-jsons-file
   (write-string-file-fn #(charred/write-json-str % :indent-str nil :escape-slash false)))
 
 (def ^{:added "0.3.16"
        :doc
-       "Return a lazy seq of parsed edn objects from a [protocol://]edn[.gz] file.
-  warning: the seq must be entirely consumed before the file is closed."}
+       "Returns a lazy seq of parsed edn objects from a [protocol://]edn[.zext] file.
+  Warning: The seq must be entirely consumed before the file is closed."}
   read-edns-file
   (read-string-format-file-fn edn/read-string))
 
 (def ^{:added "0.3.16"
        :doc
-       "Write a seq of elements serialized as EDN in a [protocol://]edn[.gz] file."}
+       "Writes a seq of elements serialized as EDN in a [protocol://]edn[.zext] file."}
   write-edns-file
   (write-string-file-fn prn-str))
 
 (defn write-edn-file
-  "Write an element serialized as EDN in a [protocol://]edn[.gz] file.
+  "Writes an element serialized as EDN in a [protocol://]edn[.zext] file.
    This is equivalent to call write-edns-file on a one-element sequence."
   ([filename x] (write-edn-file filename {} x))
   ([filename options x] (write-edns-file filename options [x])))
 
 (defn ^{:added "0.3.16"
         :doc
-        "Return a lazy seq of parsed csv row as vector from a [protocol://]csv[.gz] file.
-  see http://clojure.github.io/data.csv/ for options
-  warning: the seq must be entirely consumed before the file is closed.
+        "Returns a lazy seq of parsed csv row as vector from a [protocol://]csv[.zext] file.
+  See http://clojure.github.io/data.csv/ for options
+  Warning: The seq must be entirely consumed before the file is closed.
 
   sample usage:
   (read-csv-file \"infos_tarifs.csv\" {:encoding \"ISO-8859-1\"} :separator \\;)"}
@@ -297,8 +297,8 @@
 
 (defn ^{:added "0.3.16"
         :doc
-        "Write a seq of vectors serialized as CSV in a [protocol://]csv[.gz] file.
-  see http://clojure.github.io/data.csv/ for options.
+        "Writes a seq of vectors serialized as CSV in a [protocol://]csv[.zext] file.
+  See http://clojure.github.io/data.csv/ for options.
 
   (write-csv-file out my-lines)
   (write-csv-file out [stream-options-map] my-lines [csv options...])
@@ -325,15 +325,15 @@
 
 (def ^{:added "0.3.16"
        :doc
-       "Return a lazy seq of parsed json objects from [protocol://]jsons[.gz] files.
-  warning: the seq must be entirely consumed before every files are closed."}
+       "Returns a lazy seq of parsed json objects from [protocol://]jsons[.zext] files.
+  Warning: The seq must be entirely consumed before every files are closed."}
   read-jsons-files
   (read-string-files-fn read-jsons-file))
 
 (def ^{:added "0.3.16"
        :doc
-       "Return a lazy seq of parsed edn objects from [protocol://]edns[.gz] files.
-  warning: the seq must be entirely consumed before every files are closed."}
+       "Returns a lazy seq of parsed edn objects from [protocol://]edns[.zext] files.
+  Warning: The seq must be entirely consumed before every files are closed."}
   read-edns-files
   (read-string-files-fn read-edns-file))
 
