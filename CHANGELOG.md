@@ -2,6 +2,10 @@
 
 ## Unreleased
 ### Added
+### Changed
+
+## 0.3.38 (2024-07-01)
+### Added
 * support for more compression algorithms.
 
 ### Changed
