@@ -1,7 +1,11 @@
 # tools.io Changelog
 
 ## Unreleased
+### Added
+* support for more compression algorithms.
+
 ### Changed
+* bump clojure 1.11.3, commons-compress 1.26.2.
 
 ## 0.3.37 (2024-03-14)
 ### Changed
