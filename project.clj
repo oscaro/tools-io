@@ -3,10 +3,10 @@
   :url "https://github.com/oscaro/tools-io"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure                 "1.11.3"]
-                 [clj-commons/clj-yaml                "1.0.27"]
+  :dependencies [[org.clojure/clojure                 "1.11.4"]
+                 [clj-commons/clj-yaml                "1.0.28"]
                  [com.cnuernber/charred               "1.034"]
-                 [org.apache.commons/commons-compress "1.26.2"]]
+                 [org.apache.commons/commons-compress "1.27.1"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
@@ -31,8 +31,8 @@
                    :resource-paths ["test/resources"]
                    :dependencies [[org.clojure/tools.namespace "1.5.0"]]}
              :extra-compression
-             {:dependencies [[org.tukaani/xz            "1.9"]
-                             [com.github.luben/zstd-jni "1.5.6-3"]]}}
+             {:dependencies [[org.tukaani/xz            "1.10"]
+                             [com.github.luben/zstd-jni "1.5.6-6"]]}}
   :test-selectors {:default (fn [m] (not (:extra-compression m)))
                    :extra-compression :extra-compression}
   :aliases {"repl" ["with-profile" "+extra-compression" "repl"]
