@@ -1,8 +1,8 @@
 # tools.io Changelog
 
-## Unreleased
-### Added
+## 0.3.39 (2024-10-04)
 ### Changed
+* bump clj-yaml (1.0.28), commons-compress (1.27.1)
 
 ## 0.3.38 (2024-07-01)
 ### Added
