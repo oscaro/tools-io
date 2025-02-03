@@ -322,7 +322,7 @@ clj-kondo --lint "$(lein classpath)" --copy-configs --skip-lint
 
 ## License
 
-Copyright © 2016-2024 Oscaro.com
+Copyright © 2016-2025 Oscaro.com
 
 Distributed under the Eclipse Public License either version 1.0 or (at your
 option) any later version.
