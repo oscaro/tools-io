@@ -1,5 +1,14 @@
 # tools.io Changelog
 
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
+
 ## [0.3.40] - 2025-02-03
 ### Changed
 * Bump clj-taml (1.0.29), charred (1.036).
