@@ -5,7 +5,7 @@
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure                 "1.11.4"]
                  [clj-commons/clj-yaml                "1.0.29"]
-                 [com.cnuernber/charred               "1.036"]
+                 [com.cnuernber/charred               "1.037"]
                  [org.apache.commons/commons-compress "1.27.1"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144

@@ -5,7 +5,7 @@
 ### Added
 
 ### Changed
-
+* Bump charred (1.037).
 ### Fixed
 
 
