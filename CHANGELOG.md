@@ -1,5 +1,13 @@
 # tools.io Changelog
 
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## [0.3.41] - 2025-04-17
 ### Changed
 * Bump charred (1.037).
