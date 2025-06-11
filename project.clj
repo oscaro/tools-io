@@ -16,7 +16,8 @@
                         ["releases"  {:url "https://repo.clojars.org"
                                       :username :env/clojars_username
                                       :password :env/clojars_password
-                                      :sign-releases false}]]
+                                      :sign-releases true}]]
+  :signing {:gpg-key "github-cicd@oscaro.com"}
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
                   ["shell" "git" "commit" "-am" "Version ${:version} [ci skip]"]
