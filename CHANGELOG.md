@@ -8,6 +8,11 @@
 
 ### Fixed
 
+## [0.3.42] - 2025-10-24
+### Changed
+* Bump commons-compress 1.28.0
+* Bump zstd-jni 1.5.7-6
+
 ## [0.3.41] - 2025-04-17
 ### Changed
 * Bump charred (1.037).
