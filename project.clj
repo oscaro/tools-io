@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure                 "1.11.4"]
                  [clj-commons/clj-yaml                "1.0.29"]
                  [com.cnuernber/charred               "1.037"]
-                 [org.apache.commons/commons-compress "1.27.1"]]
+                 [org.apache.commons/commons-compress "1.28.0"]]
   ;; https://www.blog.nodrama.io/travis-continuous-delivery/
   ;; https://github.com/technomancy/leiningen/issues/2307#issuecomment-610538144
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
@@ -33,7 +33,7 @@
                    :dependencies [[org.clojure/tools.namespace "1.5.0"]]}
              :extra-compression
              {:dependencies [[org.tukaani/xz            "1.10"]
-                             [com.github.luben/zstd-jni "1.5.6-9"]]}}
+                             [com.github.luben/zstd-jni "1.5.7-6"]]}}
   :test-selectors {:default (fn [m] (not (:extra-compression m)))
                    :extra-compression :extra-compression}
   :aliases {"repl" ["with-profile" "+extra-compression" "repl"]
