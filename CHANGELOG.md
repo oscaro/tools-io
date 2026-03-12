@@ -8,6 +8,13 @@
 
 ### Fixed
 
+## [0.3.43] - 2026-03-12
+### Changed
+* bump com.cnuernber/charred "1.038"
+* bump org.tukaani/xz "1.12"
+* bump com.github.luben/zstd-jni "1.5.7-7"
+* bump org.clojure/tools.namespace "1.5.1"
+
 ## [0.3.42] - 2025-10-24
 ### Changed
 * Bump commons-compress 1.28.0
